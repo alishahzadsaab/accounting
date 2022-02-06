@@ -1,0 +1,22 @@
+{
+  "name": "frappe-accounting",
+  "description": "Simple Accounting app for everyone",
+  "productName": "Frappe Accounting",
+  "version": "0.0.2",
+  "author": {
+    "name": "Frappe Technologies Pvt. Ltd.",
+    "email": "hello@frappe.io"
+  },
+  "build": {
+    "appId": "io.frappe.accounting"
+  },
+  "main": "main.js",
+  "license": "MIT",
+  "scripts": {
+    "test": "mocha tests",
+    "start": "frappe start"
+  },
+  "dependencies": {
+    "frappejs": "^0.0.9"
+  }
+}
