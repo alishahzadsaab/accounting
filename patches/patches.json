@@ -1,0 +1,12 @@
+[
+  {
+    "version": "0.0.3",
+    "fileName": "makePaymentRefIdNullable",
+    "beforeMigrate": true
+  },
+  {
+    "version": "0.0.4",
+    "fileName": "convertCurrencyToStrings",
+    "beforeMigrate": true
+  }
+]
