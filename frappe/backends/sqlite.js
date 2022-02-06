@@ -1,4 +1,4 @@
-const frappe = require('frappe');
+const esaint = require('esaint');
 const Database = require('./database');
 
 class SqliteDatabase extends Database {
@@ -91,15 +91,15 @@ class SqliteDatabase extends Database {
   }
 
   getError(err) {
-    let errorType = frappe.errors.DatabaseError;
+    let errorType = esaint.errors.DatabaseError;
     if (err.message.includes('FOREIGN KEY')) {
-      errorType = frappe.errors.LinkValidationError;
+      errorType = esaint.errors.LinkValidationError;
     }
     if (err.message.includes('SQLITE_ERROR: cannot commit')) {
-      errorType = frappe.errors.CannotCommitError;
+      errorType = esaint.errors.CannotCommitError;
     }
     if (err.message.includes('SQLITE_CONSTRAINT: UNIQUE constraint failed:')) {
-      errorType = frappe.errors.DuplicateEntryError;
+      errorType = esaint.errors.DuplicateEntryError;
     }
     return errorType;
   }

@@ -27,4 +27,4 @@ export const outsideClickDirective = {
   },
 };
 
-// https://github.com/frappe/frappejs/commits/master/ui/plugins/outsideClickDirective.js
+// https://github.com/esaint/esaintjs/commits/master/ui/plugins/outsideClickDirective.js

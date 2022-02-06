@@ -2,8 +2,8 @@ import Avatar from '@/components/Avatar';
 import Toast from '@/components/Toast';
 import router from '@/router';
 import { ipcRenderer } from 'electron';
-import frappe, { t } from 'frappe';
-import { isPesa } from 'frappe/utils';
+import esaint, { t } from 'esaint';
+import { isPesa } from 'esaint/utils';
 import lodash from 'lodash';
 import Vue from 'vue';
 import { handleErrorWithDialog } from './errorHandling';
@@ -74,7 +74,7 @@ export function cancelDocWithPrompt(doc) {
         {
           label: t('Yes'),
           async action() {
-            const entryDoc = await frappe.getDoc(doc.doctype, doc.name);
+            const entryDoc = await esaint.getDoc(doc.doctype, doc.name);
             entryDoc.cancelled = 1;
             await entryDoc.update();
             entryDoc
@@ -108,7 +108,7 @@ export function partyWithAvatar(party) {
       Avatar,
     },
     async mounted() {
-      this.imageURL = await frappe.db.getValue('Party', party, 'image');
+      this.imageURL = await esaint.db.getValue('Party', party, 'image');
       this.label = party;
     },
     template: `
@@ -158,13 +158,13 @@ export function openQuickEdit({
 
 export async function makePDF(html, savePath) {
   await ipcRenderer.invoke(IPC_ACTIONS.SAVE_HTML_AS_PDF, html, savePath);
-  showExportInFolder(frappe.t('Save as PDF Successful'), savePath);
+  showExportInFolder(esaint.t('Save as PDF Successful'), savePath);
 }
 
 export function showExportInFolder(message, filePath) {
   showToast({
     message,
-    actionText: frappe.t('Open Folder'),
+    actionText: esaint.t('Open Folder'),
     type: 'success',
     action: async () => {
       await showItemInFolder(filePath);
@@ -343,7 +343,7 @@ export function titleCase(phrase) {
 
 export async function getIsSetupComplete() {
   try {
-    const { setupComplete } = await frappe.getSingle('AccountingSettings');
+    const { setupComplete } = await esaint.getSingle('AccountingSettings');
     return !!setupComplete;
   } catch {
     return false;
@@ -351,12 +351,12 @@ export async function getIsSetupComplete() {
 }
 
 export async function getCurrency() {
-  let currency = frappe?.AccountingSettings?.currency ?? undefined;
+  let currency = esaint?.AccountingSettings?.currency ?? undefined;
 
   if (!currency) {
     try {
       currency = (
-        await frappe.db.getSingleValues({
+        await esaint.db.getSingleValues({
           fieldname: 'currency',
           parent: 'AccountingSettings',
         })
@@ -371,14 +371,14 @@ export async function getCurrency() {
 
 export async function callInitializeMoneyMaker(currency, force = false) {
   currency ??= await getCurrency();
-  if (!force && !currency && frappe.pesa) {
+  if (!force && !currency && esaint.pesa) {
     return;
   }
 
-  if (!force && currency && frappe.pesa().options.currency === currency) {
+  if (!force && currency && esaint.pesa().options.currency === currency) {
     return;
   }
-  await frappe.initializeMoneyMaker(currency);
+  await esaint.initializeMoneyMaker(currency);
 }
 
 export function convertPesaValuesToFloat(obj) {
@@ -420,7 +420,7 @@ export function stringifyCircular(
     cacheKey.push(key);
     cacheValue.push(value);
 
-    if (convertBaseDocument && value instanceof frappe.BaseDocument) {
+    if (convertBaseDocument && value instanceof esaint.BaseDocument) {
       return value.getValidDict();
     }
 

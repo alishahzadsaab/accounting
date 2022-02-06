@@ -1,4 +1,4 @@
-import model from 'frappe/model';
+import model from 'esaint/model';
 import PurchaseInvoiceSettings from '../PurchaseInvoiceSettings/PurchaseInvoiceSettings';
 
 export default model.extend(PurchaseInvoiceSettings, {

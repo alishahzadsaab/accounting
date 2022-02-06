@@ -1,6 +1,6 @@
 import router from '@/router';
-import frappe from 'frappe';
-import { t } from 'frappe';
+import esaint from 'esaint';
+import { t } from 'esaint';
 import PartyWidget from './PartyWidget.vue';
 
 export default {
@@ -15,7 +15,7 @@ export default {
       label: t('Create Invoice'),
       condition: (doc) => !doc.isNew(),
       action: async (customer) => {
-        let doc = await frappe.getNewDoc('SalesInvoice');
+        let doc = await esaint.getNewDoc('SalesInvoice');
         router.push({
           path: `/edit/SalesInvoice/${doc.name}`,
           query: {

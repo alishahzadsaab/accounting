@@ -23,7 +23,7 @@
             <div class="w-3 h-3 rounded-sm" :class="d.class"></div>
             <div class="ml-3">{{ d.account }}</div>
           </div>
-          <div>{{ frappe.format(d.total, 'Currency') }}</div>
+          <div>{{ esaint.format(d.total, 'Currency') }}</div>
         </div>
       </div>
       <DonutChart
@@ -33,7 +33,7 @@
         :offset-x="3"
         :thickness="11.5"
         :text-offset-x="6.5"
-        :value-formatter="(value) => frappe.format(value, 'Currency')"
+        :value-formatter="(value) => esaint.format(value, 'Currency')"
         :total-label="t('Total Spending')"
         @change="(value) => (active = value)"
       />
@@ -47,7 +47,7 @@
 </template>
 
 <script>
-import frappe from 'frappe';
+import esaint from 'esaint';
 import theme from '@/theme';
 import PeriodSelector from './PeriodSelector';
 import SectionHeader from './SectionHeader';
@@ -92,14 +92,14 @@ export default {
   methods: {
     async setData() {
       const { fromDate, toDate } = await getDatesAndPeriodicity(this.period);
-      const expenseAccounts = frappe.db.knex
+      const expenseAccounts = esaint.db.knex
         .select('name')
         .from('Account')
         .where('rootType', 'Expense');
 
-      let topExpenses = await frappe.db.knex
+      let topExpenses = await esaint.db.knex
         .select({
-          total: frappe.db.knex.raw(
+          total: esaint.db.knex.raw(
             'sum(cast(?? as real)) - sum(cast(?? as real))',
             ['debit', 'credit']
           ),

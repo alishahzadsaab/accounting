@@ -95,7 +95,7 @@
   </div>
 </template>
 <script>
-import frappe from 'frappe';
+import esaint from 'esaint';
 import PageHeader from '@/components/PageHeader';
 import Button from '@/components/Button';
 import SearchBar from '@/components/SearchBar';
@@ -149,7 +149,7 @@ export default {
       });
     },
     async fetchReportData() {
-      let data = await frappe.call({
+      let data = await esaint.call({
         method: this.report.method,
         args: this.filters,
       });
@@ -247,7 +247,7 @@ export default {
       // default cell component
       let formattedValue =
         cellValue != null && cellValue !== ''
-          ? frappe.format(cellValue, column)
+          ? esaint.format(cellValue, column)
           : '';
       return {
         render(h) {

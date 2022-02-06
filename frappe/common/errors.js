@@ -1,4 +1,4 @@
-const frappe = require('frappe');
+const esaint = require('esaint');
 
 class BaseError extends Error {
   constructor(statusCode, message) {
@@ -78,11 +78,11 @@ function throwError(message, error = 'ValidationError') {
     Conflict: Conflict,
   };
   const err = new errorClass[error](message);
-  frappe.events.trigger('throw', { message, stackTrace: err.stack });
+  esaint.events.trigger('throw', { message, stackTrace: err.stack });
   throw err;
 }
 
-frappe.throw = throwError;
+esaint.throw = throwError;
 
 module.exports = {
   BaseError,

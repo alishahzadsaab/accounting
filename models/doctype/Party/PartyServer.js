@@ -1,10 +1,10 @@
-import frappe from 'frappe';
-import BaseDocument from 'frappe/model/document';
+import esaint from 'esaint';
+import BaseDocument from 'esaint/model/document';
 
 export default class PartyServer extends BaseDocument {
   beforeInsert() {
     if (this.customer && this.supplier) {
-      frappe.call({
+      esaint.call({
         method: 'show-dialog',
         args: {
           title: 'Invalid Entry',
@@ -28,15 +28,15 @@ export default class PartyServer extends BaseDocument {
     let doctype = isCustomer ? 'SalesInvoice' : 'PurchaseInvoice';
     let partyField = isCustomer ? 'customer' : 'supplier';
 
-    const outstandingAmounts = await frappe.db.knex
+    const outstandingAmounts = await esaint.db.knex
       .select('outstandingAmount')
       .from(doctype)
       .where('submitted', 1)
       .andWhere(partyField, this.name);
 
     const totalOutstanding = outstandingAmounts
-      .map(({ outstandingAmount }) => frappe.pesa(outstandingAmount))
-      .reduce((a, b) => a.add(b), frappe.pesa(0));
+      .map(({ outstandingAmount }) => esaint.pesa(outstandingAmount))
+      .reduce((a, b) => a.add(b), esaint.pesa(0));
 
     await this.set('outstandingAmount', totalOutstanding);
     await this.update();

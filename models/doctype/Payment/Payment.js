@@ -1,4 +1,4 @@
-import frappe from 'frappe';
+import esaint from 'esaint';
 import utils from '../../../accounting/utils';
 
 export default {
@@ -112,8 +112,8 @@ export default {
       formula: (doc) => doc.getSum('for', 'amount', false),
       validate(value, doc) {
         if (value.isNegative()) {
-          throw new frappe.errors.ValidationError(
-            frappe.t(`Payment amount cannot be less than zero.`)
+          throw new esaint.errors.ValidationError(
+            esaint.t(`Payment amount cannot be less than zero.`)
           );
         }
 
@@ -121,18 +121,18 @@ export default {
         const amount = doc.getSum('for', 'amount', false);
 
         if (value.gt(amount)) {
-          throw new frappe.errors.ValidationError(
-            frappe.t(
-              `Payment amount cannot exceed ${frappe.format(
+          throw new esaint.errors.ValidationError(
+            esaint.t(
+              `Payment amount cannot exceed ${esaint.format(
                 amount,
                 'Currency'
               )}.`
             )
           );
         } else if (value.isZero()) {
-          throw new frappe.errors.ValidationError(
-            frappe.t(
-              `Payment amount cannot be ${frappe.format(value, 'Currency')}.`
+          throw new esaint.errors.ValidationError(
+            esaint.t(
+              `Payment amount cannot be ${esaint.format(value, 'Currency')}.`
             )
           );
         }

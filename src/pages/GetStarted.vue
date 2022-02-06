@@ -82,8 +82,8 @@
 </template>
 
 <script>
-import frappe from 'frappe';
-import { t } from 'frappe';
+import esaint from 'esaint';
+import { t } from 'esaint';
 import PageHeader from '@/components/PageHeader';
 import Icon from '@/components/Icon';
 import Button from '@/components/Button';
@@ -157,7 +157,7 @@ export default {
               },
               fieldname: 'chartOfAccountsReviewed',
               documentation:
-                'https://frappebooks.com/docs/setting-up#1-enter-bank-accounts',
+                'https://esaintbooks.com/docs/setting-up#1-enter-bank-accounts',
             },
             {
               key: 'Opening Balances',
@@ -167,7 +167,7 @@ export default {
               description:
                 'Setup your opening balances before performing any accounting entries',
               documentation:
-                'https://frappebooks.com/docs/setting-up#5-setup-opening-balances',
+                'https://esaintbooks.com/docs/setting-up#5-setup-opening-balances',
             },
             {
               key: 'Add Taxes',
@@ -178,7 +178,7 @@ export default {
                 'Setup your tax templates for your sales or purchase transactions',
               action: () => routeTo('/list/Tax'),
               documentation:
-                'https://frappebooks.com/docs/setting-up#2-add-taxes',
+                'https://esaintbooks.com/docs/setting-up#2-add-taxes',
             },
           ],
         },
@@ -195,7 +195,7 @@ export default {
               action: () => routeTo('/list/Item'),
               fieldname: 'itemCreated',
               documentation:
-                'https://frappebooks.com/docs/setting-up#3-add-items',
+                'https://esaintbooks.com/docs/setting-up#3-add-items',
             },
             {
               key: 'Add Customers',
@@ -205,7 +205,7 @@ export default {
               action: () => routeTo('/list/Customer'),
               fieldname: 'customerCreated',
               documentation:
-                'https://frappebooks.com/docs/setting-up#4-add-customers',
+                'https://esaintbooks.com/docs/setting-up#4-add-customers',
             },
             {
               key: 'Create Invoice',
@@ -215,7 +215,7 @@ export default {
                 'Create your first invoice and mail it to your customer',
               action: () => routeTo('/list/SalesInvoice'),
               fieldname: 'invoiceCreated',
-              documentation: 'https://frappebooks.com/docs/invoices',
+              documentation: 'https://esaintbooks.com/docs/invoices',
             },
           ],
         },
@@ -248,7 +248,7 @@ export default {
                 'Create your first bill and mail it to your supplier',
               action: () => routeTo('/list/PurchaseInvoice'),
               fieldname: 'billCreated',
-              documentation: 'https://frappebooks.com/docs/bills',
+              documentation: 'https://esaintbooks.com/docs/bills',
             },
           ],
         },
@@ -261,7 +261,7 @@ export default {
     };
   },
   async activated() {
-    frappe.GetStarted = await frappe.getSingle('GetStarted');
+    esaint.GetStarted = await esaint.getSingle('GetStarted');
     this.checkForCompletedTasks();
   },
   methods: {
@@ -301,12 +301,12 @@ export default {
       }
     },
     async checkIsOnboardingComplete() {
-      if (frappe.GetStarted.onboardingComplete) {
+      if (esaint.GetStarted.onboardingComplete) {
         return true;
       }
 
-      const meta = await frappe.getMeta('GetStarted');
-      const doc = await frappe.getSingle('GetStarted');
+      const meta = await esaint.getMeta('GetStarted');
+      const doc = await esaint.getSingle('GetStarted');
       const onboardingComplete = !!meta.fields
         .filter(({ fieldname }) => fieldname !== 'onboardingComplete')
         .map(({ fieldname }) => doc.get(fieldname))
@@ -314,7 +314,7 @@ export default {
 
       if (onboardingComplete) {
         await this.updateChecks({ onboardingComplete });
-        const systemSettings = await frappe.getSingle('SystemSettings');
+        const systemSettings = await esaint.getSingle('SystemSettings');
         await systemSettings.update({ hideGetStarted: 1 });
       }
 
@@ -326,27 +326,27 @@ export default {
         return;
       }
 
-      if (!frappe.GetStarted.itemCreated) {
+      if (!esaint.GetStarted.itemCreated) {
         let { count } = (
-          await frappe.db.knex('Item').count('name as count')
+          await esaint.db.knex('Item').count('name as count')
         )[0];
         if (count > 0) {
           toUpdate.itemCreated = 1;
         }
       }
 
-      if (!frappe.GetStarted.invoiceCreated) {
+      if (!esaint.GetStarted.invoiceCreated) {
         let { count } = (
-          await frappe.db.knex('SalesInvoice').count('name as count')
+          await esaint.db.knex('SalesInvoice').count('name as count')
         )[0];
         if (count > 0) {
           toUpdate.invoiceCreated = 1;
         }
       }
 
-      if (!frappe.GetStarted.customerCreated) {
+      if (!esaint.GetStarted.customerCreated) {
         let { count } = (
-          await frappe.db
+          await esaint.db
             .knex('Party')
             .where('customer', 1)
             .count('name as count')
@@ -356,18 +356,18 @@ export default {
         }
       }
 
-      if (!frappe.GetStarted.billCreated) {
+      if (!esaint.GetStarted.billCreated) {
         let { count } = (
-          await frappe.db.knex('PurchaseInvoice').count('name as count')
+          await esaint.db.knex('PurchaseInvoice').count('name as count')
         )[0];
         if (count > 0) {
           toUpdate.billCreated = 1;
         }
       }
 
-      if (!frappe.GetStarted.supplierCreated) {
+      if (!esaint.GetStarted.supplierCreated) {
         let { count } = (
-          await frappe.db
+          await esaint.db
             .knex('Party')
             .where('supplier', 1)
             .count('name as count')
@@ -379,14 +379,14 @@ export default {
       await this.updateChecks(toUpdate);
     },
     async updateChecks(toUpdate) {
-      await frappe.GetStarted.update(toUpdate);
-      frappe.GetStarted = await frappe.getSingle('GetStarted');
+      await esaint.GetStarted.update(toUpdate);
+      esaint.GetStarted = await esaint.getSingle('GetStarted');
     },
     isCompleted(item) {
-      return frappe.GetStarted.get(item.fieldname) || 0;
+      return esaint.GetStarted.get(item.fieldname) || 0;
     },
     getIconComponent(item) {
-      let completed = frappe.GetStarted[item.fieldname] || 0;
+      let completed = esaint.GetStarted[item.fieldname] || 0;
       let name = completed ? 'green-check' : item.icon;
       let size = completed ? '24' : '18';
       return {

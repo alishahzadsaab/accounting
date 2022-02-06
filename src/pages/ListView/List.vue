@@ -56,7 +56,7 @@
   </div>
 </template>
 <script>
-import frappe from 'frappe';
+import esaint from 'esaint';
 import Row from '@/components/Row';
 import ListCell from './ListCell';
 import Avatar from '@/components/Avatar';
@@ -89,7 +89,7 @@ export default {
       return this.prepareColumns();
     },
     meta() {
-      return frappe.getMeta(this.listConfig.doctype);
+      return esaint.getMeta(this.listConfig.doctype);
     },
     hasImage() {
       return this.meta.hasField('image');
@@ -97,7 +97,7 @@ export default {
   },
   async mounted() {
     await this.setupColumnsAndData();
-    frappe.db.on(`change:${this.listConfig.doctype}`, () => {
+    esaint.db.on(`change:${this.listConfig.doctype}`, () => {
       this.updateData();
     });
   },
@@ -118,7 +118,7 @@ export default {
     },
     async updateData(filters) {
       if (!filters) filters = this.getFilters();
-      this.data = await frappe.db.getAll({
+      this.data = await esaint.db.getAll({
         doctype: this.doctype,
         fields: ['*'],
         filters,

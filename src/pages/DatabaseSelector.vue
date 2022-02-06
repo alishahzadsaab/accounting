@@ -9,7 +9,7 @@
     <div class="w-full">
       <div class="px-12">
         <h1 class="text-2xl font-semibold">
-          {{ t('Welcome to Frappe Books') }}
+          {{ t('Welcome to esaint Books') }}
         </h1>
         <p class="text-gray-600 text-base" v-if="!showFiles">
           {{

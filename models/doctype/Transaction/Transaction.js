@@ -1,6 +1,6 @@
 import Badge from '@/components/Badge';
 import { getInvoiceStatus, openQuickEdit, routeTo } from '@/utils';
-import frappe from 'frappe';
+import esaint from 'esaint';
 import utils from '../../../accounting/utils';
 import { statusColor } from '../../../src/colors';
 
@@ -26,7 +26,7 @@ export function getActions(doctype) {
       label: 'Make Payment',
       condition: (doc) => doc.submitted && doc.outstandingAmount > 0,
       action: async function makePayment(doc) {
-        let payment = await frappe.getNewDoc('Payment');
+        let payment = await esaint.getNewDoc('Payment');
         payment.once('afterInsert', async () => {
           await payment.submit();
         });

@@ -29,7 +29,7 @@
             class="text-sm bold"
             :class="{ 'bg-gray-200 text-gray-200 rounded': !invoice.hasData }"
           >
-            {{ frappe.format(invoice.paid, 'Currency') }}
+            {{ esaint.format(invoice.paid, 'Currency') }}
             <span :class="{ 'text-gray-900': invoice.hasData }">{{
               t('Paid')
             }}</span>
@@ -38,7 +38,7 @@
             class="text-sm"
             :class="{ 'bg-gray-200 text-gray-200 rounded': !invoice.hasData }"
           >
-            {{ frappe.format(invoice.unpaid, 'Currency') }}
+            {{ esaint.format(invoice.unpaid, 'Currency') }}
             <span :class="{ 'text-gray-900': invoice.hasData }">{{
               t('Unpaid')
             }}</span>
@@ -68,7 +68,7 @@
   </div>
 </template>
 <script>
-import frappe from 'frappe';
+import esaint from 'esaint';
 import Button from '@/components/Button';
 import PeriodSelector from './PeriodSelector';
 import SectionHeader from './SectionHeader';
@@ -124,7 +124,7 @@ export default {
           this.$data[d.periodKey]
         );
 
-        let result = await frappe.db
+        let result = await esaint.db
           .knex(d.doctype)
           .sum({ total: 'baseGrandTotal' })
           .sum({ outstanding: 'outstandingAmount' })
@@ -144,7 +144,7 @@ export default {
       this.invoices = await Promise.all(promises);
     },
     async newInvoice(invoice) {
-      let doc = await frappe.getNewDoc(invoice.doctype);
+      let doc = await esaint.getNewDoc(invoice.doctype);
       routeTo(`/edit/${invoice.doctype}/${doc.name}`);
     },
   },

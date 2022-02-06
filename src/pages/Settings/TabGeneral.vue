@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import frappe from 'frappe';
+import esaint from 'esaint';
 import TwoColumnForm from '@/components/TwoColumnForm';
 
 export default {
@@ -26,13 +26,13 @@ export default {
     };
   },
   async mounted() {
-    this.doc = await frappe.getDoc('AccountingSettings', 'AccountingSettings', {
+    this.doc = await esaint.getDoc('AccountingSettings', 'AccountingSettings', {
       skipDocumentCache: true,
     });
   },
   computed: {
     fields() {
-      let meta = frappe.getMeta('AccountingSettings');
+      let meta = esaint.getMeta('AccountingSettings');
       return [
         'companyName',
         'country',

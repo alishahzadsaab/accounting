@@ -37,7 +37,7 @@
   </div>
 </template>
 <script>
-import frappe from 'frappe';
+import esaint from 'esaint';
 import reports from '../../reports/view';
 import Dropdown from '@/components/Dropdown';
 import { routeTo } from '@/utils'
@@ -89,8 +89,8 @@ export default {
       });
     },
     getDoctypes() {
-      let doctypes = Object.keys(frappe.models).sort();
-      let doctypeMetas = doctypes.map(doctype => frappe.getMeta(doctype));
+      let doctypes = Object.keys(esaint.models).sort();
+      let doctypeMetas = doctypes.map(doctype => esaint.getMeta(doctype));
       let searchableDoctypes = doctypeMetas.filter(meta => {
         return !meta.isSingle && !meta.isChild;
       });

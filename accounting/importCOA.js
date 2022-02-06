@@ -1,4 +1,4 @@
-import frappe from 'frappe';
+import esaint from 'esaint';
 import countries from '../fixtures/countryInfo.json';
 import standardCOA from '../fixtures/verified/standardCOA.json';
 const accountFields = ['accountType', 'accountNumber', 'rootType', 'isGroup'];
@@ -25,7 +25,7 @@ async function importAccounts(children, parentAccount, rootType, rootAccount) {
     const { accountType, accountNumber } = child;
     const accountName = getAccountName(rootName, accountNumber);
     const isGroup = identifyIsGroup(child);
-    const doc = frappe.newDoc({
+    const doc = esaint.newDoc({
       doctype: 'Account',
       name: accountName,
       parentAccount,
@@ -56,7 +56,7 @@ function identifyIsGroup(child) {
 }
 
 export async function getCountryCOA() {
-  const doc = await frappe.getDoc('AccountingSettings');
+  const doc = await esaint.getDoc('AccountingSettings');
   const conCode = countries[doc.country].code;
 
   try {

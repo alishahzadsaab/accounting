@@ -1,4 +1,4 @@
-const BaseDocument = require('frappe/model/document');
+const BaseDocument = require('esaint/model/document');
 
 module.exports = class NumberSeries extends BaseDocument {
   validate() {

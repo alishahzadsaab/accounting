@@ -1,4 +1,4 @@
-import frappe from 'frappe';
+import esaint from 'esaint';
 import getCommonExportActions from '../commonExporter';
 
 const title = 'Trial Balance';
@@ -16,7 +16,7 @@ export default {
       placeholder: 'From Date',
       required: 1,
       default: async () => {
-        return (await frappe.getSingle('AccountingSettings')).fiscalYearStart;
+        return (await esaint.getSingle('AccountingSettings')).fiscalYearStart;
       },
     },
     {
@@ -27,7 +27,7 @@ export default {
       label: 'To Date',
       required: 1,
       default: async () => {
-        return (await frappe.getSingle('AccountingSettings')).fiscalYearEnd;
+        return (await esaint.getSingle('AccountingSettings')).fiscalYearEnd;
       },
     },
   ],

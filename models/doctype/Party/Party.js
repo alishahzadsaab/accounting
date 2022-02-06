@@ -1,4 +1,4 @@
-import frappe, { t } from 'frappe';
+import esaint, { t } from 'esaint';
 
 export default {
   name: 'Party',
@@ -45,7 +45,7 @@ export default {
           accountName = 'Creditors';
         }
 
-        const accountExists = await frappe.db.exists('Account', accountName);
+        const accountExists = await esaint.db.exists('Account', accountName);
         return accountExists ? accountName : '';
       },
     },
@@ -60,7 +60,7 @@ export default {
       fieldtype: 'Link',
       target: 'Currency',
       placeholder: 'INR',
-      formula: () => frappe.AccountingSettings.currency,
+      formula: () => esaint.AccountingSettings.currency,
     },
     {
       fieldname: 'email',

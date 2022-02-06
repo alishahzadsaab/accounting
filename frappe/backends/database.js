@@ -1,6 +1,6 @@
-const frappe = require('frappe');
-const Observable = require('frappe/utils/observable');
-const CacheManager = require('frappe/utils/cacheManager');
+const esaint = require('esaint');
+const Observable = require('esaint/utils/observable');
+const CacheManager = require('esaint/utils/cacheManager');
 const Knex = require('knex');
 
 module.exports = class Database extends Observable {
@@ -24,9 +24,9 @@ module.exports = class Database extends Observable {
   }
 
   async migrate() {
-    for (let doctype in frappe.models) {
+    for (let doctype in esaint.models) {
       // check if controller module
-      let meta = frappe.getMeta(doctype);
+      let meta = esaint.getMeta(doctype);
       let baseDoctype = meta.getBaseDocType();
       if (!meta.isSingle) {
         if (await this.tableExists(baseDoctype)) {
@@ -41,7 +41,7 @@ module.exports = class Database extends Observable {
   }
 
   async initializeSingles() {
-    let singleDoctypes = frappe
+    let singleDoctypes = esaint
       .getModels((model) => model.isSingle)
       .map((model) => model.name);
 
@@ -49,7 +49,7 @@ module.exports = class Database extends Observable {
       if (await this.singleExists(doctype)) {
         const singleValues = await this.getSingleFieldsToInsert(doctype);
         singleValues.forEach(({ fieldname, value }) => {
-          let singleValue = frappe.newDoc({
+          let singleValue = esaint.newDoc({
             doctype: 'SingleValue',
             parent: doctype,
             fieldname,
@@ -59,7 +59,7 @@ module.exports = class Database extends Observable {
         });
         continue;
       }
-      let meta = frappe.getMeta(doctype);
+      let meta = esaint.getMeta(doctype);
       if (meta.fields.every((df) => df.default == null)) {
         continue;
       }
@@ -83,13 +83,13 @@ module.exports = class Database extends Observable {
 
   async getSingleFieldsToInsert(doctype) {
     const existingFields = (
-      await frappe.db
+      await esaint.db
         .knex('SingleValue')
         .where({ parent: doctype })
         .select('fieldname')
     ).map(({ fieldname }) => fieldname);
 
-    return frappe
+    return esaint
       .getMeta(doctype)
       .fields.map(({ fieldname, default: value }) => ({
         fieldname,
@@ -172,7 +172,7 @@ module.exports = class Database extends Observable {
 
     // link
     if (field.fieldtype === 'Link' && field.target) {
-      let meta = frappe.getMeta(field.target);
+      let meta = esaint.getMeta(field.target);
       table
         .foreign(field.fieldname)
         .references('name')
@@ -215,7 +215,7 @@ module.exports = class Database extends Observable {
   async getNewForeignKeys(doctype) {
     let foreignKeys = await this.getForeignKeys(doctype);
     let newForeignKeys = [];
-    let meta = frappe.getMeta(doctype);
+    let meta = esaint.getMeta(doctype);
     for (let field of meta.getValidFields({ withChildren: false })) {
       if (
         field.fieldtype === 'Link' &&
@@ -242,14 +242,14 @@ module.exports = class Database extends Observable {
   }
 
   async get(doctype, name = null, fields = '*') {
-    let meta = frappe.getMeta(doctype);
+    let meta = esaint.getMeta(doctype);
     let doc;
     if (meta.isSingle) {
       doc = await this.getSingle(doctype);
       doc.name = doctype;
     } else {
       if (!name) {
-        throw new frappe.errors.ValueError('name is mandatory');
+        throw new esaint.errors.ValueError('name is mandatory');
       }
       doc = await this.getOne(doctype, name, fields);
     }
@@ -308,7 +308,7 @@ module.exports = class Database extends Observable {
       return fieldname;
     });
 
-    let builder = frappe.db.knex('SingleValue');
+    let builder = esaint.db.knex('SingleValue');
     builder = builder.where(fieldnames[0]);
 
     fieldnames.slice(1).forEach(({ fieldname, parent }) => {
@@ -330,13 +330,13 @@ module.exports = class Database extends Observable {
     }
 
     return values.map((value) => {
-      const fields = frappe.getMeta(value.parent).fields;
+      const fields = esaint.getMeta(value.parent).fields;
       return this.getDocFormattedDoc(fields, values);
     });
   }
 
   async getOne(doctype, name, fields = '*') {
-    let meta = frappe.getMeta(doctype);
+    let meta = esaint.getMeta(doctype);
     let baseDoctype = meta.getBaseDocType();
 
     const doc = await this.knex
@@ -372,7 +372,7 @@ module.exports = class Database extends Observable {
     // format for usage, not going into the db
     try {
       if (field.fieldtype === 'Currency') {
-        return frappe.pesa(value);
+        return esaint.pesa(value);
       }
     } catch (err) {
       err.message += ` value: '${value}' of type: ${typeof value}, fieldname: '${
@@ -387,14 +387,14 @@ module.exports = class Database extends Observable {
     this.trigger(`change:${doctype}`, { name }, 500);
     this.trigger(`change`, { doctype, name }, 500);
     // also trigger change for basedOn doctype
-    let meta = frappe.getMeta(doctype);
+    let meta = esaint.getMeta(doctype);
     if (meta.basedOn) {
       this.triggerChange(meta.basedOn, name);
     }
   }
 
   async insert(doctype, doc) {
-    let meta = frappe.getMeta(doctype);
+    let meta = esaint.getMeta(doctype);
     let baseDoctype = meta.getBaseDocType();
     doc = this.applyBaseDocTypeFilters(doctype, doc);
 
@@ -429,7 +429,7 @@ module.exports = class Database extends Observable {
     let fields = this.getValidFields(doctype);
 
     if (!doc.name) {
-      doc.name = frappe.getRandomString();
+      doc.name = esaint.getRandomString();
     }
 
     let formattedDoc = this.getFormattedDoc(fields, doc);
@@ -437,7 +437,7 @@ module.exports = class Database extends Observable {
   }
 
   async update(doctype, doc) {
-    let meta = frappe.getMeta(doctype);
+    let meta = esaint.getMeta(doctype);
     let baseDoctype = meta.getBaseDocType();
     doc = this.applyBaseDocTypeFilters(doctype, doc);
 
@@ -504,12 +504,12 @@ module.exports = class Database extends Observable {
   }
 
   async updateSingle(doctype, doc) {
-    let meta = frappe.getMeta(doctype);
+    let meta = esaint.getMeta(doctype);
     await this.deleteSingleValues(doctype);
     for (let field of meta.getValidFields({ withChildren: false })) {
       let value = doc[field.fieldname];
       if (value != null) {
-        let singleValue = frappe.newDoc({
+        let singleValue = esaint.newDoc({
           doctype: 'SingleValue',
           parent: doctype,
           fieldname: field.fieldname,
@@ -525,7 +525,7 @@ module.exports = class Database extends Observable {
   }
 
   async rename(doctype, oldName, newName) {
-    let meta = frappe.getMeta(doctype);
+    let meta = esaint.getMeta(doctype);
     let baseDoctype = meta.getBaseDocType();
     await this.knex(baseDoctype)
       .update({ name: newName })
@@ -533,14 +533,14 @@ module.exports = class Database extends Observable {
       .then(() => {
         this.clearValueCache(doctype, oldName);
       });
-    await frappe.db.commit();
+    await esaint.db.commit();
 
     this.triggerChange(doctype, newName);
   }
 
   prepareChild(parenttype, parent, child, field, idx) {
     if (!child.name) {
-      child.name = frappe.getRandomString();
+      child.name = esaint.getRandomString();
     }
     child.parent = parent;
     child.parenttype = parenttype;
@@ -549,7 +549,7 @@ module.exports = class Database extends Observable {
   }
 
   getValidFields(doctype) {
-    return frappe.getMeta(doctype).getValidFields({ withChildren: false });
+    return esaint.getMeta(doctype).getValidFields({ withChildren: false });
   }
 
   getFormattedDoc(fields, doc) {
@@ -569,7 +569,7 @@ module.exports = class Database extends Observable {
       let currency = value;
 
       if (type === 'number' || type === 'string') {
-        currency = frappe.pesa(value);
+        currency = esaint.pesa(value);
       }
 
       const currencyValue = currency.store;
@@ -600,7 +600,7 @@ module.exports = class Database extends Observable {
   }
 
   applyBaseDocTypeFilters(doctype, doc) {
-    let meta = frappe.getMeta(doctype);
+    let meta = esaint.getMeta(doctype);
     if (meta.filters) {
       for (let fieldname in meta.filters) {
         let value = meta.filters[fieldname];
@@ -619,12 +619,12 @@ module.exports = class Database extends Observable {
   }
 
   async delete(doctype, name) {
-    let meta = frappe.getMeta(doctype);
+    let meta = esaint.getMeta(doctype);
     let baseDoctype = meta.getBaseDocType();
     await this.deleteOne(baseDoctype, name);
 
     // delete children
-    let tableFields = frappe.getMeta(doctype).getTableFields();
+    let tableFields = esaint.getMeta(doctype).getTableFields();
     for (let field of tableFields) {
       await this.deleteChildren(field.childtype, name);
     }
@@ -650,7 +650,7 @@ module.exports = class Database extends Observable {
   }
 
   async getValue(doctype, filters, fieldname = 'name') {
-    let meta = frappe.getMeta(doctype);
+    let meta = esaint.getMeta(doctype);
     let baseDoctype = meta.getBaseDocType();
     if (typeof filters === 'string') {
       filters = { name: filters };
@@ -700,7 +700,7 @@ module.exports = class Database extends Observable {
     orderBy = 'creation',
     order = 'desc',
   } = {}) {
-    let meta = frappe.getMeta(doctype);
+    let meta = esaint.getMeta(doctype);
     let baseDoctype = meta.getBaseDocType();
     if (!fields) {
       fields = meta.getKeywordFields();
@@ -801,7 +801,7 @@ module.exports = class Database extends Observable {
     try {
       await this.sql('commit');
     } catch (e) {
-      if (e.type !== frappe.errors.CannotCommitError) {
+      if (e.type !== esaint.errors.CannotCommitError) {
         throw e;
       }
     }
@@ -817,7 +817,7 @@ module.exports = class Database extends Observable {
   }
 
   getError(err) {
-    return frappe.errors.DatabaseError;
+    return esaint.errors.DatabaseError;
   }
 
   initTypeMap() {
@@ -825,6 +825,6 @@ module.exports = class Database extends Observable {
   }
 
   executePostDbConnect() {
-    frappe.initializeMoneyMaker();
+    esaint.initializeMoneyMaker();
   }
 };

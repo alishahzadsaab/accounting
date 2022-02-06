@@ -1,4 +1,4 @@
-import { t } from 'frappe';
+import { t } from 'esaint';
 
 export default {
   doctype: 'Item',

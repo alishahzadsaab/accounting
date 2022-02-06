@@ -1,6 +1,6 @@
 import config from '@/config';
-import frappe from 'frappe';
-import { DEFAULT_LOCALE } from 'frappe/utils/consts';
+import esaint from 'esaint';
+import { DEFAULT_LOCALE } from 'esaint/utils/consts';
 import countryList from '~/fixtures/countryInfo.json';
 import generateTaxes from '../../../models/doctype/Tax/RegionalEntries';
 import regionalModelUpdates from '../../../models/regionalModelUpdates';
@@ -18,7 +18,7 @@ export default async function setupCompany(setupWizardValues) {
     fiscalYearEnd,
   } = setupWizardValues;
 
-  const accountingSettings = frappe.AccountingSettings;
+  const accountingSettings = esaint.AccountingSettings;
   const currency = countryList[country]['currency'];
   const locale = countryList[country]['locale'] ?? DEFAULT_LOCALE;
   await callInitializeMoneyMaker(currency);
@@ -34,7 +34,7 @@ export default async function setupCompany(setupWizardValues) {
     currency,
   });
 
-  const printSettings = await frappe.getSingle('PrintSettings');
+  const printSettings = await esaint.getSingle('PrintSettings');
   printSettings.update({
     logo: companyLogo,
     companyName,
@@ -48,9 +48,9 @@ export default async function setupCompany(setupWizardValues) {
   updateCompanyNameInConfig();
 
   await accountingSettings.update({ setupComplete: 1 });
-  frappe.AccountingSettings = accountingSettings;
+  esaint.AccountingSettings = accountingSettings;
 
-  (await frappe.getSingle('SystemSettings')).update({ locale });
+  (await esaint.getSingle('SystemSettings')).update({ locale });
 }
 
 async function setupGlobalCurrencies(countries) {
@@ -88,7 +88,7 @@ async function setupGlobalCurrencies(countries) {
 }
 
 async function setupChartOfAccounts(bankName, country) {
-  await frappe.call({
+  await esaint.call({
     method: 'import-coa',
   });
   const parentAccount = await getBankAccountParentName(country);
@@ -106,15 +106,15 @@ async function setupChartOfAccounts(bankName, country) {
 async function setupRegionalChanges(country) {
   await generateTaxes(country);
   await regionalModelUpdates({ country });
-  await frappe.db.migrate();
+  await esaint.db.migrate();
 }
 
 function updateCompanyNameInConfig() {
-  let filePath = frappe.db.dbPath;
+  let filePath = esaint.db.dbPath;
   let files = config.get('files', []);
   files.forEach((file) => {
     if (file.filePath === filePath) {
-      file.companyName = frappe.AccountingSettings.companyName;
+      file.companyName = esaint.AccountingSettings.companyName;
     }
   });
   config.set('files', files);
@@ -124,7 +124,7 @@ export async function checkIfExactRecordAbsent(docObject) {
   const { doctype, name } = docObject;
   const newDocObject = Object.assign({}, docObject);
   delete newDocObject.doctype;
-  const rows = await frappe.db.knex(doctype).where({ name });
+  const rows = await esaint.db.knex(doctype).where({ name });
 
   if (rows.length === 0) {
     return true;
@@ -138,7 +138,7 @@ export async function checkIfExactRecordAbsent(docObject) {
   });
 
   if (!matchList.every(Boolean)) {
-    await frappe.db.knex(doctype).where({ name }).del();
+    await esaint.db.knex(doctype).where({ name }).del();
     return true;
   }
 
@@ -151,12 +151,12 @@ async function checkAndCreateDoc(docObject) {
     return;
   }
 
-  const doc = await frappe.newDoc(docObject);
+  const doc = await esaint.newDoc(docObject);
   return doc.insert();
 }
 
 async function getBankAccountParentName(country) {
-  const parentBankAccount = await frappe.db
+  const parentBankAccount = await esaint.db
     .knex('Account')
     .where({ isGroup: true, accountType: 'Bank' });
 

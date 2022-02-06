@@ -1,4 +1,4 @@
-import model from 'frappe/model';
+import model from 'esaint/model';
 import Quotation from '../Quotation/Quotation';
 
 export default model.extend(Quotation, {

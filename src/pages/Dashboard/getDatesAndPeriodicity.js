@@ -1,10 +1,10 @@
-import frappe from 'frappe';
+import esaint from 'esaint';
 import { DateTime } from 'luxon';
 
 export async function getDatesAndPeriodicity(period) {
   let fromDate, toDate;
   let periodicity = 'Monthly';
-  let accountingSettings = await frappe.getSingle('AccountingSettings');
+  let accountingSettings = await esaint.getSingle('AccountingSettings');
 
   if (period === 'This Year') {
     fromDate = accountingSettings.fiscalYearStart;

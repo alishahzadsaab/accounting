@@ -1,9 +1,9 @@
-import frappe, { t } from 'frappe';
+import esaint, { t } from 'esaint';
 import Icon from './components/Icon';
 
 const config = {
   getTitle: async () => {
-    const { companyName } = await frappe.getSingle('AccountingSettings');
+    const { companyName } = await esaint.getSingle('AccountingSettings');
     return companyName;
   },
   getGroups: () => [
@@ -97,12 +97,12 @@ const config = {
         {
           label: t('GSTR1'),
           route: '/report/gstr-1',
-          hidden: () => frappe.AccountingSettings.country !== 'India',
+          hidden: () => esaint.AccountingSettings.country !== 'India',
         },
         {
           label: t('GSTR2'),
           route: '/report/gstr-2',
-          hidden: () => frappe.AccountingSettings.country !== 'India',
+          hidden: () => esaint.AccountingSettings.country !== 'India',
         },
       ],
     },

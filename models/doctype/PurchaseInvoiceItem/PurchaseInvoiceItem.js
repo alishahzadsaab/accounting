@@ -41,7 +41,7 @@ export default {
       required: 1,
       formula: async (row, doc) => {
         const baseRate =
-          (await doc.getFrom('Item', row.item, 'rate')) || frappe.pesa(0);
+          (await doc.getFrom('Item', row.item, 'rate')) || esaint.pesa(0);
         return baseRate.div(doc.exchangeRate);
       },
       getCurrency: (row, doc) => doc.currency,

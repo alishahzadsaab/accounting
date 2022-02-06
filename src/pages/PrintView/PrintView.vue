@@ -49,7 +49,7 @@
   </div>
 </template>
 <script>
-import frappe from 'frappe';
+import esaint from 'esaint';
 import PageHeader from '@/components/PageHeader';
 import SearchBar from '@/components/SearchBar';
 import DropdownWithAction from '@/components/DropdownWithAction';
@@ -79,12 +79,12 @@ export default {
     };
   },
   async mounted() {
-    this.doc = await frappe.getDoc(this.doctype, this.name);
-    this.printSettings = await frappe.getSingle('PrintSettings');
+    this.doc = await esaint.getDoc(this.doctype, this.name);
+    this.printSettings = await esaint.getSingle('PrintSettings');
   },
   computed: {
     meta() {
-      return frappe.getMeta(this.doctype);
+      return esaint.getMeta(this.doctype);
     },
     printTemplate() {
       return this.meta.printTemplate;

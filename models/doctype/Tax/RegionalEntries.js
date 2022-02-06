@@ -1,4 +1,4 @@
-import frappe from 'frappe';
+import esaint from 'esaint';
 
 export default async function generateTaxes(country) {
   if (country === 'India') {
@@ -8,15 +8,15 @@ export default async function generateTaxes(country) {
       'Exempt-GST': [0],
       'Exempt-IGST': [0],
     };
-    let newTax = await frappe.getNewDoc('Tax');
+    let newTax = await esaint.getNewDoc('Tax');
 
     for (const type of Object.keys(GSTs)) {
       for (const percent of GSTs[type]) {
         const name = `${type}-${percent}`;
 
         // Not cross checking cause hardcoded values.
-        await frappe.db.knex('Tax').where({ name }).del();
-        await frappe.db.knex('TaxDetail').where({ parent: name }).del();
+        await esaint.db.knex('Tax').where({ name }).del();
+        await esaint.db.knex('TaxDetail').where({ parent: name }).del();
 
         const details = getTaxDetails(type, percent);
         await newTax.set({ name, details });

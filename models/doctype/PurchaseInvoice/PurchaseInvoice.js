@@ -56,7 +56,7 @@ export default {
       hidden: 1,
       formula: (doc) =>
         doc.getFrom('Party', doc.supplier, 'currency') ||
-        frappe.AccountingSettings.currency,
+        esaint.AccountingSettings.currency,
       formulaDependsOn: ['supplier'],
     },
     {

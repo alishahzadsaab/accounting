@@ -1,4 +1,4 @@
-import model from 'frappe/model';
+import model from 'esaint/model';
 import SalesInvoice from '../SalesInvoice/SalesInvoice';
 
 const Quotation = model.extend(

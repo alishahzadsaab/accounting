@@ -116,7 +116,7 @@
   </div>
 </template>
 <script>
-import frappe from 'frappe';
+import esaint from 'esaint';
 import PageHeader from '@/components/PageHeader';
 import Button from '@/components/Button';
 import DropdownWithActions from '@/components/DropdownWithActions';
@@ -155,7 +155,7 @@ export default {
   },
   computed: {
     meta() {
-      return frappe.getMeta(this.doctype);
+      return esaint.getMeta(this.doctype);
     },
     status() {
       if (this.doc._notInserted || !this.doc.submitted) {
@@ -169,14 +169,14 @@ export default {
       if (this.doc.accounts) {
         value = this.doc.getSum('accounts', 'debit');
       }
-      return frappe.format(value, 'Currency');
+      return esaint.format(value, 'Currency');
     },
     totalCredit() {
       let value = 0;
       if (this.doc.accounts) {
         value = this.doc.getSum('accounts', 'credit');
       }
-      return frappe.format(value, 'Currency');
+      return esaint.format(value, 'Currency');
     },
     actions() {
       return getActionsForDocument(this.doc);
@@ -184,10 +184,10 @@ export default {
   },
   async mounted() {
     try {
-      this.doc = await frappe.getDoc(this.doctype, this.name);
+      this.doc = await esaint.getDoc(this.doctype, this.name);
       window.je = this.doc;
     } catch (error) {
-      if (error instanceof frappe.errors.NotFoundError) {
+      if (error instanceof esaint.errors.NotFoundError) {
         routeTo(`/list/${this.doctype}`);
         return;
       }

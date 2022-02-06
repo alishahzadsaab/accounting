@@ -67,7 +67,7 @@
   </div>
 </template>
 <script>
-import frappe from 'frappe';
+import esaint from 'esaint';
 import TwoColumnForm from '@/components/TwoColumnForm';
 import FormControl from '@/components/Controls/FormControl';
 import Button from '@/components/Button';
@@ -107,7 +107,7 @@ export default {
     Popover,
   },
   async mounted() {
-    this.doc = await frappe.newDoc({ doctype: 'SetupWizard' });
+    this.doc = await esaint.newDoc({ doctype: 'SetupWizard' });
     this.doc.on('change', () => {
       this.valuesFilled = this.allValuesFilled();
     });
@@ -140,7 +140,7 @@ export default {
         this.$emit('setup-complete');
       } catch (e) {
         this.loading = false;
-        if (e.type === frappe.errors.DuplicateEntryError) {
+        if (e.type === esaint.errors.DuplicateEntryError) {
           console.log(e);
           console.log('retrying');
           await this.renameDbFileAndRerunSetup();
@@ -171,7 +171,7 @@ export default {
   },
   computed: {
     meta() {
-      return frappe.getMeta('SetupWizard');
+      return esaint.getMeta('SetupWizard');
     },
     fields() {
       return this.meta.getQuickEditFields();

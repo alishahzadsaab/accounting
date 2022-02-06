@@ -77,8 +77,8 @@
 </template>
 
 <script>
-import frappe from 'frappe';
-import { t } from 'frappe';
+import esaint from 'esaint';
+import { t } from 'esaint';
 import Button from '@/components/Button';
 import StatusBadge from '@/components/StatusBadge';
 import FormControl from '@/components/Controls/FormControl';
@@ -119,7 +119,7 @@ export default {
   },
   computed: {
     meta() {
-      return frappe.getMeta(this.doctype);
+      return esaint.getMeta(this.doctype);
     },
     status() {
       if (this.doc && this.doc._notInserted) {
@@ -179,7 +179,7 @@ export default {
     },
     async fetchDoc() {
       try {
-        this.doc = await frappe.getDoc(this.doctype, this.name);
+        this.doc = await esaint.getDoc(this.doctype, this.name);
 
         this.doc.once('afterRename', () => {
           openQuickEdit({

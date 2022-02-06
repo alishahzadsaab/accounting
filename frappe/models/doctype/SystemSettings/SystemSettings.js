@@ -1,5 +1,5 @@
 const { DateTime } = require('luxon');
-const { t } = require('frappe');
+const { t } = require('esaint');
 const {
   DEFAULT_DISPLAY_PRECISION,
   DEFAULT_INTERNAL_PRECISION,
@@ -63,7 +63,7 @@ module.exports = {
         if (value >= 0 && value <= 9) {
           return;
         }
-        throw new frappe.errors.ValidationError(
+        throw new esaint.errors.ValidationError(
           t('Display Precision should have a value between 0 and 9.')
         );
       },

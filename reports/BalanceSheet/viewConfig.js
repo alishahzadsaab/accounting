@@ -1,4 +1,4 @@
-import frappe from 'frappe';
+import esaint from 'esaint';
 import getCommonExportActions from '../commonExporter';
 
 export default {
@@ -13,7 +13,7 @@ export default {
       label: 'To Date',
       required: 1,
       default: async () => {
-        return (await frappe.getSingle('AccountingSettings')).fiscalYearEnd;
+        return (await esaint.getSingle('AccountingSettings')).fiscalYearEnd;
       },
     },
     {

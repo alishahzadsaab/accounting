@@ -39,7 +39,7 @@
 </template>
 
 <script>
-import frappe from 'frappe';
+import esaint from 'esaint';
 import { ipcRenderer } from 'electron';
 import Base from './Base';
 import { IPC_ACTIONS } from '@/messages'
@@ -58,7 +58,7 @@ export default {
   methods: {
     async openFileSelector() {
       const options = {
-        title: frappe.t('Select Image'),
+        title: esaint.t('Select Image'),
         properties: ['openFile'],
         filters: [{ name: 'Image', extensions: ['png', 'jpg', 'jpeg', 'webp'] }]
       };

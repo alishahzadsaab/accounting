@@ -26,8 +26,8 @@
   </div>
 </template>
 <script>
-import frappe from 'frappe';
-// import Observable from 'frappe/utils/observable';
+import esaint from 'esaint';
+// import Observable from 'esaint/utils/observable';
 import PageHeader from '@/components/PageHeader';
 import Button from '@/components/Button';
 import SearchBar from '@/components/SearchBar';
@@ -56,7 +56,7 @@ export default {
   methods: {
     async makeNewDoc() {
       const doctype = this.listConfig.doctype;
-      const doc = await frappe.getNewDoc(doctype);
+      const doc = await esaint.getNewDoc(doctype);
       if (this.listConfig.filters) {
         doc.set(this.listConfig.filters);
       }
@@ -90,7 +90,7 @@ export default {
   },
   computed: {
     meta() {
-      return frappe.getMeta(this.doctype);
+      return esaint.getMeta(this.doctype);
     },
     listConfig() {
       if (listConfigs[this.doctype]) {

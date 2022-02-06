@@ -1,6 +1,6 @@
 import { showMessageDialog } from '@/utils';
-import frappe from 'frappe';
-import { t } from 'frappe';
+import esaint from 'esaint';
+import { t } from 'esaint';
 import { DateTime } from 'luxon';
 import { exportCsv, saveExportData } from '../reports/commonExporter';
 import { getSavePath } from '../src/utils';
@@ -86,7 +86,7 @@ const IGST = {
 };
 
 export async function generateGstr1Json(getReportData) {
-  const { gstin } = frappe.AccountingSettings;
+  const { gstin } = esaint.AccountingSettings;
   if (!gstin) {
     showMessageDialog({
       message: t('Export Failed'),
@@ -146,7 +146,7 @@ async function generateB2bData(rows) {
       itms: [],
     };
 
-    let items = await frappe.db
+    let items = await esaint.db
       .knex('SalesInvoiceItem')
       .where('parent', invRecord.inum);
 
@@ -154,18 +154,18 @@ async function generateB2bData(rows) {
       const itemRecord = {
         num: item.hsnCode,
         itm_det: {
-          txval: frappe.pesa(item.baseAmount).float,
+          txval: esaint.pesa(item.baseAmount).float,
           rt: GST[item.tax],
           csamt: 0,
-          camt: frappe
+          camt: esaint
             .pesa(CSGST[item.tax] || 0)
             .mul(item.baseAmount)
             .div(100).float,
-          samt: frappe
+          samt: esaint
             .pesa(CSGST[item.tax] || 0)
             .mul(item.baseAmount)
             .div(100).float,
-          iamt: frappe
+          iamt: esaint
             .pesa(IGST[item.tax] || 0)
             .mul(item.baseAmount)
             .div(100).float,
@@ -206,7 +206,7 @@ async function generateB2clData(invoices) {
       itms: [],
     };
 
-    let items = await frappe.db
+    let items = await esaint.db
       .knex('SalesInvoiceItem')
       .where('parent', invRecord.inum);
 
@@ -214,10 +214,10 @@ async function generateB2clData(invoices) {
       const itemRecord = {
         num: item.hsnCode,
         itm_det: {
-          txval: frappe.pesa(item.baseAmount).float,
+          txval: esaint.pesa(item.baseAmount).float,
           rt: GST[item.tax],
           csamt: 0,
-          iamt: frappe
+          iamt: esaint
             .pesa(invoice.rate || 0)
             .mul(item.baseAmount)
             .div(100).float,
@@ -266,7 +266,7 @@ async function generateB2csData(invoices) {
 }
 
 export async function generateGstr2Csv(getReportData) {
-  const { gstin } = frappe.AccountingSettings;
+  const { gstin } = esaint.AccountingSettings;
   if (!gstin) {
     showMessageDialog({
       message: t('Export Failed'),
@@ -347,7 +347,7 @@ async function generateB2bCsvGstr2(rows, columns) {
 }
 
 export async function generateGstr1Csv(getReportData) {
-  const { gstin } = frappe.AccountingSettings;
+  const { gstin } = esaint.AccountingSettings;
   if (!gstin) {
     showMessageDialog({
       message: t('Export Failed'),

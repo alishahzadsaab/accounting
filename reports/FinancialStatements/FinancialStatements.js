@@ -1,4 +1,4 @@
-import frappe from 'frappe';
+import esaint from 'esaint';
 import { DateTime } from 'luxon';
 import { convertPesaValuesToFloat } from '../../src/utils';
 
@@ -24,7 +24,7 @@ export async function getData({
       let periodKey = getPeriodKey(entry.date, periodicity);
 
       if (!account[periodKey]) {
-        account[periodKey] = frappe.pesa(0.0);
+        account[periodKey] = esaint.pesa(0.0);
       }
 
       const multiplier = balanceMustBe === 'Debit' ? 1 : -1;
@@ -40,7 +40,7 @@ export async function getData({
 
       for (let account of accounts) {
         if (!account[periodKey]) {
-          account[periodKey] = frappe.pesa(0.0);
+          account[periodKey] = esaint.pesa(0.0);
         }
 
         account[periodKey] = account[periodKey].add(
@@ -57,7 +57,7 @@ export async function getData({
 
   periodList.forEach((periodKey) => {
     if (!totalRow[periodKey]) {
-      totalRow[periodKey] = frappe.pesa(0.0);
+      totalRow[periodKey] = esaint.pesa(0.0);
     }
 
     for (let account of accounts) {
@@ -85,15 +85,15 @@ export async function getTrialBalance({ rootType, fromDate, toDate }) {
     );
     account.opening = beforePeriodEntries.reduce(
       (acc, entry) => acc.add(entry.debit).sub(entry.credit),
-      frappe.pesa(0)
+      esaint.pesa(0)
     );
 
     if (account.opening.gte(0)) {
       account.openingDebit = account.opening;
-      account.openingCredit = frappe.pesa(0);
+      account.openingCredit = esaint.pesa(0);
     } else {
       account.openingCredit = account.opening.neg();
-      account.openingDebit = frappe.pesa(0);
+      account.openingDebit = esaint.pesa(0);
     }
 
     // debit / credit
@@ -102,11 +102,11 @@ export async function getTrialBalance({ rootType, fromDate, toDate }) {
     );
     account.debit = periodEntries.reduce(
       (acc, entry) => acc.add(entry.debit),
-      frappe.pesa(0)
+      esaint.pesa(0)
     );
     account.credit = periodEntries.reduce(
       (acc, entry) => acc.add(entry.credit),
-      frappe.pesa(0)
+      esaint.pesa(0)
     );
 
     // closing
@@ -114,10 +114,10 @@ export async function getTrialBalance({ rootType, fromDate, toDate }) {
 
     if (account.closing.gte(0)) {
       account.closingDebit = account.closing;
-      account.closingCredit = frappe.pesa(0);
+      account.closingCredit = esaint.pesa(0);
     } else {
       account.closingCredit = account.closing.neg();
-      account.closingDebit = frappe.pesa(0);
+      account.closingDebit = esaint.pesa(0);
     }
 
     if (account.debit.neq(0) || account.credit.neq(0)) {
@@ -261,7 +261,7 @@ async function getLedgerEntries(fromDate, toDate, accounts) {
     return before;
   };
 
-  const ledgerEntries = await frappe.db.getAll({
+  const ledgerEntries = await esaint.db.getAll({
     doctype: 'AccountingLedgerEntry',
     fields: ['account', 'debit', 'credit', 'date'],
     filters: {
@@ -274,7 +274,7 @@ async function getLedgerEntries(fromDate, toDate, accounts) {
 }
 
 async function getAccounts(rootType) {
-  let accounts = await frappe.db.getAll({
+  let accounts = await esaint.db.getAll({
     doctype: 'Account',
     fields: ['name', 'parentAccount', 'isGroup'],
     filters: {
@@ -293,7 +293,7 @@ async function getAccounts(rootType) {
 }
 
 async function getFiscalYear() {
-  let { fiscalYearStart, fiscalYearEnd } = await frappe.getSingle(
+  let { fiscalYearStart, fiscalYearEnd } = await esaint.getSingle(
     'AccountingSettings'
   );
   return {

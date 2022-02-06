@@ -1,4 +1,4 @@
-import BaseDocument from 'frappe/model/document';
+import BaseDocument from 'esaint/model/document';
 
 export default class Event extends BaseDocument {
   alertEvent() {

@@ -23,7 +23,7 @@
 
 <script>
 import './styles/index.css';
-import frappe from 'frappe';
+import esaint from 'esaint';
 import Desk from './pages/Desk';
 import SetupWizard from './pages/SetupWizard/SetupWizard';
 import DatabaseSelector from './pages/DatabaseSelector';
@@ -98,7 +98,7 @@ export default {
       await this.showSetupWizardOrDesk(true);
     },
     async showSetupWizardOrDesk(resetRoute = false) {
-      const { setupComplete } = frappe.AccountingSettings;
+      const { setupComplete } = esaint.AccountingSettings;
       if (!setupComplete) {
         this.activeScreen = 'SetupWizard';
       } else {
@@ -110,8 +110,8 @@ export default {
         return;
       }
 
-      const { onboardingComplete } = await frappe.getSingle('GetStarted');
-      const { hideGetStarted } = await frappe.getSingle('SystemSettings');
+      const { onboardingComplete } = await esaint.getSingle('GetStarted');
+      const { hideGetStarted } = await esaint.getSingle('SystemSettings');
 
       if (hideGetStarted || onboardingComplete) {
         routeTo('/');

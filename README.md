@@ -1,17 +1,17 @@
 <div align="center" markdown="1">
 
-<img src=".github/logo.png" alt="Frappe Books logo" width="384"/>
+<img src=".github/logo.png" alt="esaint Books logo" width="384"/>
 
 ---
 
-[![GitHub release (latest by date)](https://img.shields.io/github/v/release/frappe/books)](https://github.com/frappe/books/releases)
+[![GitHub release (latest by date)](https://img.shields.io/github/v/release/esaint/books)](https://github.com/esaint/books/releases)
 ![Platforms](https://img.shields.io/badge/platform-mac%2C%20windows%2C%20linux-yellowgreen)
-[![Publish](https://github.com/frappe/books/actions/workflows/publish.yml/badge.svg)](https://github.com/frappe/books/actions/workflows/publish.yml)
+[![Publish](https://github.com/esaint/books/actions/workflows/publish.yml/badge.svg)](https://github.com/esaint/books/actions/workflows/publish.yml)
 
 
 Free Desktop book-keeping software for small-businesses and freelancers.
 
-<img src=".github/frappe-books-preview.png" alt="Frappe Books Preview" />
+<img src=".github/esaint-books-preview.png" alt="esaint Books Preview" />
 
 </div>
 
@@ -35,11 +35,11 @@ Free Desktop book-keeping software for small-businesses and freelancers.
 ## Download
 
 Download the latest release for your platform from the [releases
-page](https://github.com/frappe/books/releases).
+page](https://github.com/esaint/books/releases).
 
 ## Development
 
-Frappe Books is built on Vue.js and Electron. It is offline by default, and uses
+esaint Books is built on Vue.js and Electron. It is offline by default, and uses
 a local SQLite file as the database.
 
 ### Pre-requisites
@@ -70,11 +70,11 @@ a local SQLite file as the database.
 
 ### Clone and Run
 
-Due to some `yarn.lock` issue this won't run, to run it check [Issue #315](https://github.com/frappe/books/issues/315)
+Due to some `yarn.lock` issue this won't run, to run it check [Issue #315](https://github.com/esaint/books/issues/315)
 
 ```bash
 # clone the repository
-git clone https://github.com/frappe/books.git
+git clone https://github.com/esaint/books.git
 
 # change directory
 cd books

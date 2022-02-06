@@ -1,4 +1,4 @@
-import { t } from 'frappe';
+import { t } from 'esaint';
 import { getStatusColumn } from '../Transaction/Transaction';
 
 export default {

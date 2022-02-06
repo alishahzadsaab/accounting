@@ -1,4 +1,4 @@
-import model from 'frappe/model';
+import model from 'esaint/model';
 import SalesInvoiceSettings from '../SalesInvoiceSettings/SalesInvoiceSettings';
 
 export default model.extend(SalesInvoiceSettings, {

@@ -1,4 +1,4 @@
-import frappe from 'frappe';
+import esaint from 'esaint';
 import Account from './AccountDocument';
 
 export default {
@@ -88,7 +88,7 @@ export default {
   treeSettings: {
     parentField: 'parentAccount',
     async getRootLabel() {
-      let accountingSettings = await frappe.getSingle('AccountingSettings');
+      let accountingSettings = await esaint.getSingle('AccountingSettings');
       return accountingSettings.companyName;
     },
   },

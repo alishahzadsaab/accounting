@@ -1,16 +1,16 @@
-import frappe from 'frappe';
+import esaint from 'esaint';
 import { DateTime } from 'luxon';
 import { getPeriodList } from '../FinancialStatements/FinancialStatements';
 
 class Cashflow {
   async run({ fromDate, toDate, periodicity }) {
-    let cashAndBankAccounts = frappe.db
+    let cashAndBankAccounts = esaint.db
       .knex('Account')
       .select('name')
       .where('accountType', 'in', ['Cash', 'Bank'])
       .andWhere('isGroup', 0);
-    let dateAsMonthYear = frappe.db.knex.raw('strftime("%m-%Y", ??)', 'date');
-    let res = await frappe.db
+    let dateAsMonthYear = esaint.db.knex.raw('strftime("%m-%Y", ??)', 'date');
+    let res = await esaint.db
       .knex('AccountingLedgerEntry')
       .where('reverted', 0)
       .sum({

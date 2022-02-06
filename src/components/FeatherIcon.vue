@@ -41,5 +41,5 @@ export default {
   }
 };
 
-// https://github.com/frappe/frappejs/commits/master/ui/components/FeatherIcon.vue
+// https://github.com/esaint/esaintjs/commits/master/ui/components/FeatherIcon.vue
 </script>

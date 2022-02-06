@@ -1,4 +1,4 @@
-import frappe from 'frappe';
+import esaint from 'esaint';
 
 export default {
   name: 'Email',
@@ -25,7 +25,7 @@ export default {
       required: 1,
       hidden: 0,
       formula: async () => {
-        const accountingSettings = await frappe.getDoc('AccountingSettings');
+        const accountingSettings = await esaint.getDoc('AccountingSettings');
         return accountingSettings.email;
       },
       disabled: 1,

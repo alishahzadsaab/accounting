@@ -1,12 +1,12 @@
 import { ipcRenderer } from 'electron';
-import frappe, { t } from 'frappe';
+import esaint, { t } from 'esaint';
 import {
   DuplicateEntryError,
   LinkValidationError,
   MandatoryError,
   ValidationError,
-} from 'frappe/common/errors';
-import BaseDocument from 'frappe/model/document';
+} from 'esaint/common/errors';
+import BaseDocument from 'esaint/model/document';
 import { IPC_ACTIONS, IPC_MESSAGES } from './messages';
 import { showMessageDialog, showToast } from './utils';
 
@@ -45,7 +45,7 @@ function getToastProps(errorLogObj: ErrorLog, cb?: Function) {
   };
 
   // @ts-ignore
-  if (!frappe.SystemSettings?.autoReportErrors) {
+  if (!esaint.SystemSettings?.autoReportErrors) {
     Object.assign(props, {
       actionText: t`Report Error`,
       action: () => {
@@ -63,7 +63,7 @@ export function getErrorLogObject(error: Error, more: object = {}): ErrorLog {
   const errorLogObj = { name, stack, message, more };
 
   // @ts-ignore
-  frappe.errorLog.push(errorLogObj);
+  esaint.errorLog.push(errorLogObj);
 
   return errorLogObj;
 }
@@ -85,7 +85,7 @@ export function handleError(
   const errorLogObj = getErrorLogObject(error, more);
 
   // @ts-ignore
-  if (frappe.SystemSettings?.autoReportErrors) {
+  if (esaint.SystemSettings?.autoReportErrors) {
     reportError(errorLogObj, cb);
   } else {
     showToast(getToastProps(errorLogObj, cb));
@@ -156,7 +156,7 @@ export function getErrorHandledSync(func: Function) {
 }
 
 function getIssueUrlQuery(errorLogObj?: ErrorLog): string {
-  const baseUrl = 'https://github.com/frappe/books/issues/new?labels=bug';
+  const baseUrl = 'https://github.com/esaint/books/issues/new?labels=bug';
 
   const body = ['<h2>Description</h2>', 'Add some description...', ''];
 

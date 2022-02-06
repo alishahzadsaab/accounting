@@ -19,7 +19,7 @@
       <div class="p-3">
         <template v-if="filters.length">
           <div
-            :key="filter.fieldname + frappe.getRandomString()"
+            :key="filter.fieldname + esaint.getRandomString()"
             v-for="(filter, i) in filters"
             class="flex items-center justify-between text-base"
             :class="i !== 0 && 'mt-2'"

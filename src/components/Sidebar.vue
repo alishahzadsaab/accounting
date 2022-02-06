@@ -114,10 +114,10 @@ export default {
   },
   computed: {
     appVersion() {
-      return frappe.store.appVersion;
+      return esaint.store.appVersion;
     },
     dbPath() {
-      const splits = frappe.db.dbPath.split(path.sep);
+      const splits = esaint.db.dbPath.split(path.sep);
       return path.join(...splits.slice(splits.length - 2));
     },
   },
@@ -130,7 +130,7 @@ export default {
     groups = groups.filter((group) => {
       if (
         group.route === '/get-started' &&
-        frappe.SystemSettings.hideGetStarted
+        esaint.SystemSettings.hideGetStarted
       ) {
         return false;
       }

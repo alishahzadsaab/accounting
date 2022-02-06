@@ -1,5 +1,5 @@
-import frappe from 'frappe';
-import BaseDocument from 'frappe/model/document';
+import esaint from 'esaint';
+import BaseDocument from 'esaint/model/document';
 import format from './GSTR3BFormat';
 
 export default class GSTR3B extends BaseDocument {
@@ -28,12 +28,12 @@ export default class GSTR3B extends BaseDocument {
         `${this.year}-${month}-${lastDate}`,
       ],
     };
-    const salesInvoices = frappe.db.getAll({
+    const salesInvoices = esaint.db.getAll({
       doctype: 'SalesInvoice',
       filters,
       fields: ['*'],
     });
-    const purchaseInvoices = frappe.db.getAll({
+    const purchaseInvoices = esaint.db.getAll({
       doctype: 'PurchaseInvoice',
       filters,
       fields: ['*'],
@@ -58,13 +58,13 @@ export default class GSTR3B extends BaseDocument {
 
   async makeGSTRow(ledgerEntry) {
     let row = {};
-    ledgerEntry = await frappe.getDoc(ledgerEntry.doctype, ledgerEntry.name);
-    let party = await frappe.getDoc(
+    ledgerEntry = await esaint.getDoc(ledgerEntry.doctype, ledgerEntry.name);
+    let party = await esaint.getDoc(
       'Party',
       ledgerEntry.customer || ledgerEntry.supplier
     );
     if (party.address) {
-      let addressDetails = await frappe.getDoc('Address', party.address);
+      let addressDetails = await esaint.getDoc('Address', party.address);
       row.place = addressDetails.state || '';
     }
     row.gstin = party.gstin;

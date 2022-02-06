@@ -1,12 +1,12 @@
 const BaseDocument = require('./document');
-const frappe = require('frappe');
+const esaint = require('esaint');
 const model = require('./index');
 const { indicators: indicatorColor } = require('../../src/colors');
 
 module.exports = class BaseMeta extends BaseDocument {
   constructor(data) {
     if (data.basedOn) {
-      let config = frappe.models[data.basedOn];
+      let config = esaint.models[data.basedOn];
       Object.assign(data, config, {
         name: data.name,
         label: data.label,
@@ -33,7 +33,7 @@ module.exports = class BaseMeta extends BaseDocument {
     if (!this.fields.find(df => df.fieldname === 'name') && !this.isSingle) {
       this.fields = [
         {
-          label: frappe.t('ID'),
+          label: esaint.t('ID'),
           fieldname: 'name',
           fieldtype: 'Data',
           required: 1,
@@ -71,7 +71,7 @@ module.exports = class BaseMeta extends BaseDocument {
    * @param {Object} filters
    *
    * Usage:
-   *   meta = frappe.getMeta('ToDo')
+   *   meta = esaint.getMeta('ToDo')
    *   dataFields = meta.getFieldsWith({ fieldtype: 'Data' })
    */
   getFieldsWith(filters) {
@@ -113,7 +113,7 @@ module.exports = class BaseMeta extends BaseDocument {
         this._hasFormula = true;
       } else {
         for (let tablefield of this.getTableFields()) {
-          if (frappe.getMeta(tablefield.childtype).getFormulaFields().length) {
+          if (esaint.getMeta(tablefield.childtype).getFormulaFields().length) {
             this._hasFormula = true;
             break;
           }
@@ -149,12 +149,12 @@ module.exports = class BaseMeta extends BaseDocument {
       // fields validation
       this.fields.forEach((df, i) => {
         if (!df.fieldname) {
-          throw new frappe.errors.ValidationError(
+          throw new esaint.errors.ValidationError(
             `DocType ${this.name}: "fieldname" is required for field at index ${i}`
           );
         }
         if (!df.fieldtype) {
-          throw new frappe.errors.ValidationError(
+          throw new esaint.errors.ValidationError(
             `DocType ${this.name}: "fieldtype" is required for field "${df.fieldname}"`
           );
         }
@@ -165,7 +165,7 @@ module.exports = class BaseMeta extends BaseDocument {
       // standard fields
       for (let field of model.commonFields) {
         if (
-          frappe.db.typeMap[field.fieldtype] &&
+          esaint.db.typeMap[field.fieldtype] &&
           !doctypeFields.includes(field.fieldname)
         ) {
           _add(field);
@@ -176,7 +176,7 @@ module.exports = class BaseMeta extends BaseDocument {
         _add({
           fieldtype: 'Check',
           fieldname: 'submitted',
-          label: frappe.t('Submitted')
+          label: esaint.t('Submitted')
         });
       }
 
@@ -184,7 +184,7 @@ module.exports = class BaseMeta extends BaseDocument {
         // child fields
         for (let field of model.childFields) {
           if (
-            frappe.db.typeMap[field.fieldtype] &&
+            esaint.db.typeMap[field.fieldtype] &&
             !doctypeFields.includes(field.fieldname)
           ) {
             _add(field);
@@ -194,7 +194,7 @@ module.exports = class BaseMeta extends BaseDocument {
         // parent fields
         for (let field of model.parentFields) {
           if (
-            frappe.db.typeMap[field.fieldtype] &&
+            esaint.db.typeMap[field.fieldtype] &&
             !doctypeFields.includes(field.fieldname)
           ) {
             _add(field);
@@ -206,7 +206,7 @@ module.exports = class BaseMeta extends BaseDocument {
         // tree fields
         for (let field of model.treeFields) {
           if (
-            frappe.db.typeMap[field.fieldtype] &&
+            esaint.db.typeMap[field.fieldtype] &&
             !doctypeFields.includes(field.fieldname)
           ) {
             _add(field);
@@ -216,7 +216,7 @@ module.exports = class BaseMeta extends BaseDocument {
 
       // doctype fields
       for (let field of this.fields) {
-        let include = frappe.db.typeMap[field.fieldtype];
+        let include = esaint.db.typeMap[field.fieldtype];
 
         if (include) {
           _add(field);
@@ -276,7 +276,7 @@ module.exports = class BaseMeta extends BaseDocument {
       validValues = options.map(o => o.value);
     }
     if (!validValues.includes(value)) {
-      throw new frappe.errors.ValueError(
+      throw new esaint.errors.ValueError(
         // prettier-ignore
         `DocType ${this.name}: Invalid value "${value}" for "${field.label}". Must be one of ${options.join(', ')}`
       );
@@ -308,7 +308,7 @@ module.exports = class BaseMeta extends BaseDocument {
   }
 
   getIndicatorColor(doc) {
-    if (frappe.isDirty(this.name, doc.name)) {
+    if (esaint.isDirty(this.name, doc.name)) {
       return indicatorColor.ORANGE;
     } else {
       if (this.indicators) {

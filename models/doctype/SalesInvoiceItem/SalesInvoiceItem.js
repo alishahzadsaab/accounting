@@ -40,8 +40,8 @@ export default {
           return;
         }
 
-        throw new frappe.errors.ValidationError(
-          frappe.t(`Quantity (${value}) cannot be less than zero.`)
+        throw new esaint.errors.ValidationError(
+          esaint.t(`Quantity (${value}) cannot be less than zero.`)
         );
       },
     },
@@ -52,7 +52,7 @@ export default {
       required: 1,
       formula: async (row, doc) => {
         const baseRate =
-          (await doc.getFrom('Item', row.item, 'rate')) || frappe.pesa(0);
+          (await doc.getFrom('Item', row.item, 'rate')) || esaint.pesa(0);
         return baseRate.div(doc.exchangeRate);
       },
       getCurrency: (row, doc) => doc.currency,
@@ -62,9 +62,9 @@ export default {
           return;
         }
 
-        throw new frappe.errors.ValidationError(
-          frappe.t(
-            `Rate (${frappe.format(value, 'Currency')}) cannot be less zero.`
+        throw new esaint.errors.ValidationError(
+          esaint.t(
+            `Rate (${esaint.format(value, 'Currency')}) cannot be less zero.`
           )
         );
       },

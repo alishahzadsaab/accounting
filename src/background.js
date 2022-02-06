@@ -22,7 +22,7 @@ import saveHtmlAsPdf from './saveHtmlAsPdf';
 const isDevelopment = process.env.NODE_ENV !== 'production';
 const isMac = process.platform === 'darwin';
 const isLinux = process.platform === 'linux';
-const title = 'Frappe Books';
+const title = 'esaint Books';
 const icon = isDevelopment
   ? path.resolve('./build/icon.png')
   : path.join(__dirname, 'icons', '512x512.png');

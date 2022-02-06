@@ -46,7 +46,7 @@
   </div>
 </template>
 <script>
-import frappe from 'frappe';
+import esaint from 'esaint';
 import { ipcRenderer } from 'electron';
 import TwoColumnForm from '@/components/TwoColumnForm';
 import FormControl from '@/components/Controls/FormControl';
@@ -72,14 +72,14 @@ export default {
     };
   },
   async mounted() {
-    this.doc = await frappe.getSingle('PrintSettings');
+    this.doc = await esaint.getSingle('PrintSettings');
     this.companyName = (
-      await frappe.getSingle('AccountingSettings')
+      await esaint.getSingle('AccountingSettings')
     ).companyName;
   },
   computed: {
     meta() {
-      return frappe.getMeta('PrintSettings');
+      return esaint.getMeta('PrintSettings');
     },
     fields() {
       return ['template', 'color', 'font', 'email', 'phone', 'address'].map(
@@ -90,7 +90,7 @@ export default {
   methods: {
     async openFileSelector() {
       const options = {
-        title: frappe.t('Select Logo'),
+        title: esaint.t('Select Logo'),
         properties: ['openFile'],
         filters: [{ name: 'Invoice Logo', extensions: ['png', 'jpg', 'svg'] }],
       };

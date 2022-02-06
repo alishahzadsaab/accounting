@@ -2,7 +2,7 @@
   <div>
     <div class="p-4">
       <h4 class="pb-2">{{ t('Data Import') }}</h4>
-      <frappe-control
+      <esaint-control
         :docfield="{
           fieldtype: 'Select',
           fieldname: 'referenceDoctype',
@@ -18,7 +18,7 @@
       >
       <f-button primary @click="importData">Submit</f-button>
 
-      <frappe-control
+      <esaint-control
         v-if="doctype"
         ref="fileInput"
         style="position: absolute; display: none"
@@ -33,10 +33,10 @@
   </div>
 </template>
 <script>
-import frappe from 'frappe';
-import DataTable from 'frappe-datatable';
-import { convertFieldsToDatatableColumns } from 'frappe/client/ui/utils';
-import { writeFile } from 'frappe/server/utils';
+import esaint from 'esaint';
+import DataTable from 'esaint-datatable';
+import { convertFieldsToDatatableColumns } from 'esaint/client/ui/utils';
+import { writeFile } from 'esaint/server/utils';
 import path from 'path';
 import csv2json from 'csvjson-csv2json';
 
@@ -50,7 +50,7 @@ export default {
   methods: {
     showTable(doctype) {
       this.doctype = doctype;
-      const meta = frappe.getMeta(doctype);
+      const meta = esaint.getMeta(doctype);
       const columns = convertFieldsToDatatableColumns(meta.fields);
       this.renderTable(columns);
     },
@@ -66,7 +66,7 @@ export default {
       });
     },
     async downloadCSV() {
-      const meta = frappe.getMeta(this.doctype);
+      const meta = esaint.getMeta(this.doctype);
       let csvString = '';
       for (let field of meta.fields) {
         csvString += field.label + ',';
@@ -75,24 +75,24 @@ export default {
       const documentsPath =
         process.env.NODE_ENV === 'development'
           ? path.resolve('.')
-          : frappe.store.documentsPath;
+          : esaint.store.documentsPath;
 
-      let title = frappe.t('Message');
-      let message = frappe.t('Template saved successfully.');
+      let title = esaint.t('Message');
+      let message = esaint.t('Template saved successfully.');
 
       if (documentsPath === undefined) {
-        title = frappe.t('Error');
-        message = frappe.t('Template could not be saved.');
+        title = esaint.t('Error');
+        message = esaint.t('Template could not be saved.');
       } else {
         await writeFile(
           path.resolve(
-            documentsPath + `/frappe-accounting/${this.doctype}.csv`
+            documentsPath + `/esaint-accounting/${this.doctype}.csv`
           ),
           csvString
         );
       }
 
-      frappe.call({
+      esaint.call({
         method: 'show-dialog',
         args: { title, message },
       });
@@ -101,7 +101,7 @@ export default {
       if (file[0]) {
         var reader = new FileReader();
         reader.onload = () => {
-          const meta = frappe.getMeta(this.doctype);
+          const meta = esaint.getMeta(this.doctype);
           let header = reader.result.split('\n')[0];
           header = header.split(',').map((label) => {
             let fieldname;
@@ -139,7 +139,7 @@ export default {
 
       data.forEach(async (d) => {
         try {
-          await frappe
+          await esaint
             .newDoc(
               Object.assign(d, {
                 doctype: this.doctype,
@@ -150,7 +150,7 @@ export default {
           console.log(e);
         }
       });
-      frappe.call({
+      esaint.call({
         method: 'show-dialog',
         args: {
           title: 'Message',

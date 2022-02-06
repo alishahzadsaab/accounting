@@ -1,5 +1,5 @@
 import Badge from '@/components/Badge';
-import { t } from 'frappe';
+import { t } from 'esaint';
 
 export default {
   doctype: 'JournalEntry',

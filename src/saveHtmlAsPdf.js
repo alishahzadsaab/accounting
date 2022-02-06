@@ -1,5 +1,5 @@
 import { BrowserWindow } from 'electron';
-import { sleep } from 'frappe/utils';
+import { sleep } from 'esaint/utils';
 import fs from 'fs/promises';
 
 const PRINT_OPTIONS = {

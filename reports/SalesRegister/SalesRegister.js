@@ -1,4 +1,4 @@
-import frappe from 'frappe';
+import esaint from 'esaint';
 
 class SalesRegister {
   async run({ fromDate, toDate, customer }) {
@@ -17,7 +17,7 @@ class SalesRegister {
       filters.date = ['<=', toDate];
     }
 
-    const invoices = await frappe.db.getAll({
+    const invoices = await esaint.db.getAll({
       doctype: 'SalesInvoice',
       fields: ['name', 'date', 'customer', 'account', 'netTotal', 'grandTotal'],
       filters: filters,
@@ -27,7 +27,7 @@ class SalesRegister {
 
     const invoiceNames = invoices.map((d) => d.name);
 
-    const taxes = await frappe.db.getAll({
+    const taxes = await esaint.db.getAll({
       doctype: 'TaxSummary',
       fields: ['parent', 'amount'],
       filters: {

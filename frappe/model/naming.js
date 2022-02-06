@@ -1,9 +1,9 @@
-const frappe = require('frappe');
-const { getRandomString } = require('frappe/utils');
+const esaint = require('esaint');
+const { getRandomString } = require('esaint/utils');
 
 module.exports = {
   async setName(doc) {
-    if (frappe.isServer) {
+    if (esaint.isServer) {
       // if is server, always name again if autoincrement or other
       if (doc.meta.naming === 'autoincrement') {
         doc.name = await this.getNextId(doc.doctype);
@@ -48,7 +48,7 @@ module.exports = {
   },
 
   async getLastInserted(doctype) {
-    const lastInserted = await frappe.db.getAll({
+    const lastInserted = await esaint.db.getAll({
       doctype: doctype,
       fields: ['name'],
       limit: 1,
@@ -61,21 +61,21 @@ module.exports = {
   async getSeriesNext(prefix) {
     let series;
     try {
-      series = await frappe.getDoc('NumberSeries', prefix);
+      series = await esaint.getDoc('NumberSeries', prefix);
     } catch (e) {
       if (!e.statusCode || e.statusCode !== 404) {
         throw e;
       }
       await this.createNumberSeries(prefix);
-      series = await frappe.getDoc('NumberSeries', prefix);
+      series = await esaint.getDoc('NumberSeries', prefix);
     }
     let next = await series.next();
     return prefix + next;
   },
 
   async createNumberSeries(prefix, setting, start = 1000) {
-    if (!(await frappe.db.exists('NumberSeries', prefix))) {
-      const series = frappe.newDoc({
+    if (!(await esaint.db.exists('NumberSeries', prefix))) {
+      const series = esaint.newDoc({
         doctype: 'NumberSeries',
         name: prefix,
         current: start,
@@ -83,7 +83,7 @@ module.exports = {
       await series.insert();
 
       if (setting) {
-        const settingDoc = await frappe.getSingle(setting);
+        const settingDoc = await esaint.getSingle(setting);
         settingDoc.numberSeries = series.name;
         await settingDoc.update();
       }

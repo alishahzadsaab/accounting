@@ -20,7 +20,7 @@
         </div>
         <div class="flex justify-between">
           <span>
-            {{ frappe.format(invoice.date, invoiceMeta.getField('date')) }}
+            {{ esaint.format(invoice.date, invoiceMeta.getField('date')) }}
           </span>
           <div>
             <span
@@ -28,7 +28,7 @@
               v-if="fullyPaid(invoice) || notPaid(invoice)"
             >
               {{
-                frappe.format(
+                esaint.format(
                   invoice.baseGrandTotal,
                   invoiceMeta.getField('baseGrandTotal')
                 )
@@ -36,7 +36,7 @@
             </span>
             <span class="text-gray-600" v-if="partiallyPaid(invoice)">
               ({{
-                frappe.format(
+                esaint.format(
                   invoice.baseGrandTotal,
                   invoiceMeta.getField('baseGrandTotal')
                 )
@@ -50,7 +50,7 @@
 </template>
 
 <script>
-import frappe from 'frappe';
+import esaint from 'esaint';
 import { getStatusColumn } from '../Transaction/Transaction';
 import { routeTo } from '@/utils';
 
@@ -68,7 +68,7 @@ export default {
       return isCustomer ? 'SalesInvoice' : 'PurchaseInvoice';
     },
     invoiceMeta() {
-      return frappe.getMeta(this.invoiceDoctype);
+      return esaint.getMeta(this.invoiceDoctype);
     }
   },
   mounted() {
@@ -79,7 +79,7 @@ export default {
       let isCustomer = this.doc.doctype === 'Customer';
       let doctype = this.invoiceDoctype;
       let partyField = isCustomer ? 'customer' : 'supplier';
-      this.pendingInvoices = await frappe.db.getAll({
+      this.pendingInvoices = await esaint.db.getAll({
         doctype,
         fields: [
           'name',

@@ -10,9 +10,9 @@ const {
 module.exports = {
   initializeAndRegister(customModels = {}, force = false) {
     this.init(force);
-    const common = require('frappe/common');
+    const common = require('esaint/common');
     this.registerLibs(common);
-    const coreModels = require('frappe/models');
+    const coreModels = require('esaint/models');
     this.registerModels(coreModels);
     this.registerModels(customModels);
   },
@@ -22,7 +22,7 @@ module.exports = {
 
     // to be called after db initialization
     const values =
-      (await frappe.db?.getSingleValues(
+      (await esaint.db?.getSingleValues(
         {
           fieldname: 'internalPrecision',
           parent: 'SystemSettings',
@@ -88,7 +88,7 @@ module.exports = {
   },
 
   registerLibs(common) {
-    // add standard libs and utils to frappe
+    // add standard libs and utils to esaint
     common.initLibs(this);
   },
 
@@ -272,7 +272,7 @@ module.exports = {
   getNewDoc(doctype) {
     let doc = this.newDoc({ doctype: doctype });
     doc._notInserted = true;
-    doc.name = frappe.getRandomString();
+    doc.name = esaint.getRandomString();
     this.addToCache(doc);
     return doc;
   },

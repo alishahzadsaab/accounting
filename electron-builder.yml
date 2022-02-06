@@ -1,5 +1,5 @@
-productName: Frappe Books
-appId: io.frappe.books
+productName: esaint Books
+appId: io.esaint.books
 afterSign: build/notarize.js
 extraResources: [
   { 
@@ -19,7 +19,7 @@ mac:
   publish:
     - github
 win:
-  publisherName: Frappe Technologies Pvt. Ltd.
+  publisherName: esaint Technologies Pvt. Ltd.
   icon: build/icon.ico
   publish:
     - github

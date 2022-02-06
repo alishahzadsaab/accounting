@@ -1,5 +1,5 @@
 import { ipcRenderer } from 'electron';
-import frappe from 'frappe';
+import esaint from 'esaint';
 import Vue from 'vue';
 import models from '../models';
 import App from './App';
@@ -11,20 +11,20 @@ import { outsideClickDirective } from './ui';
 import { showToast, stringifyCircular } from './utils';
 
 (async () => {
-  frappe.isServer = true;
-  frappe.isElectron = true;
-  frappe.initializeAndRegister(models);
-  frappe.fetch = window.fetch.bind();
+  esaint.isServer = true;
+  esaint.isElectron = true;
+  esaint.initializeAndRegister(models);
+  esaint.fetch = window.fetch.bind();
 
   ipcRenderer.send = getErrorHandled(ipcRenderer.send);
   ipcRenderer.invoke = getErrorHandled(ipcRenderer.invoke);
 
-  frappe.events.on('reload-main-window', () => {
+  esaint.events.on('reload-main-window', () => {
     ipcRenderer.send(IPC_MESSAGES.RELOAD_MAIN_WINDOW);
   });
 
-  window.frappe = frappe;
-  window.frappe.store = {};
+  window.esaint = esaint;
+  window.esaint.store = {};
 
   registerIpcRendererListeners();
 
@@ -33,8 +33,8 @@ import { showToast, stringifyCircular } from './utils';
   Vue.directive('on-outside-click', outsideClickDirective);
   Vue.mixin({
     computed: {
-      frappe() {
-        return frappe;
+      esaint() {
+        return esaint;
       },
       platform() {
         return {
@@ -45,8 +45,8 @@ import { showToast, stringifyCircular } from './utils';
       },
     },
     methods: {
-      t: frappe.t,
-      T: frappe.T,
+      t: esaint.t,
+      T: esaint.T,
     },
   });
 
@@ -93,17 +93,17 @@ import { showToast, stringifyCircular } from './utils';
 
 function registerIpcRendererListeners() {
   ipcRenderer.on(IPC_CHANNELS.STORE_ON_WINDOW, (event, message) => {
-    Object.assign(window.frappe.store, message);
+    Object.assign(window.esaint.store, message);
   });
 
   ipcRenderer.on(IPC_CHANNELS.CHECKING_FOR_UPDATE, (_) => {
-    showToast({ message: frappe.t`Checking for updates` });
+    showToast({ message: esaint.t`Checking for updates` });
   });
 
   ipcRenderer.on(IPC_CHANNELS.UPDATE_AVAILABLE, (_, version) => {
     const message = version
-      ? frappe.t`Version ${version} available`
-      : frappe.t`New version available`;
+      ? esaint.t`Version ${version} available`
+      : esaint.t`New version available`;
     const action = () => {
       ipcRenderer.send(IPC_MESSAGES.DOWNLOAD_UPDATE);
     };
@@ -111,14 +111,14 @@ function registerIpcRendererListeners() {
     showToast({
       message,
       action,
-      actionText: frappe.t`Download Update`,
+      actionText: esaint.t`Download Update`,
       duration: 10000,
       type: 'success',
     });
   });
 
   ipcRenderer.on(IPC_CHANNELS.UPDATE_NOT_AVAILABLE, (_) => {
-    showToast({ message: frappe.t`No updates available` });
+    showToast({ message: esaint.t`No updates available` });
   });
 
   ipcRenderer.on(IPC_CHANNELS.UPDATE_DOWNLOADED, (_) => {
@@ -126,9 +126,9 @@ function registerIpcRendererListeners() {
       ipcRenderer.send(IPC_MESSAGES.INSTALL_UPDATE);
     };
     showToast({
-      message: frappe.t`Update downloaded`,
+      message: esaint.t`Update downloaded`,
       action,
-      actionText: frappe.t`Install Update`,
+      actionText: esaint.t`Install Update`,
       duration: 10000,
       type: 'success',
     });

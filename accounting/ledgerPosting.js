@@ -1,4 +1,4 @@
-import frappe from 'frappe';
+import esaint from 'esaint';
 
 export default class LedgerPosting {
   constructor({ reference, party, date, description }) {
@@ -27,7 +27,7 @@ export default class LedgerPosting {
 
   async setAccountBalanceChange(accountName, type, amount) {
     const debitAccounts = ['Asset', 'Expense'];
-    const { rootType } = await frappe.getDoc('Account', accountName);
+    const { rootType } = await esaint.getDoc('Account', accountName);
     if (debitAccounts.indexOf(rootType) === -1) {
       const change = type == 'credit' ? amount : amount.neg();
       this.accountEntries.push({
@@ -53,8 +53,8 @@ export default class LedgerPosting {
         referenceName: referenceName || this.reference.name,
         description: this.description,
         reverted: this.reverted,
-        debit: frappe.pesa(0),
-        credit: frappe.pesa(0),
+        debit: esaint.pesa(0),
+        credit: esaint.pesa(0),
       };
 
       this.entries.push(entry);
@@ -72,7 +72,7 @@ export default class LedgerPosting {
   async postReverse() {
     this.validateEntries();
 
-    let data = await frappe.db.getAll({
+    let data = await esaint.db.getAll({
       doctype: 'AccountingLedgerEntry',
       fields: ['name'],
       filters: {
@@ -82,7 +82,7 @@ export default class LedgerPosting {
     });
 
     for (let entry of data) {
-      let entryDoc = await frappe.getDoc('AccountingLedgerEntry', entry.name);
+      let entryDoc = await esaint.getDoc('AccountingLedgerEntry', entry.name);
       entryDoc.reverted = 1;
       await entryDoc.update();
     }
@@ -123,17 +123,17 @@ export default class LedgerPosting {
     let { debit, credit } = this.getTotalDebitAndCredit();
     if (debit.neq(credit)) {
       throw new Error(
-        `Total Debit: ${frappe.format(
+        `Total Debit: ${esaint.format(
           debit,
           'Currency'
-        )} must be equal to Total Credit: ${frappe.format(credit, 'Currency')}`
+        )} must be equal to Total Credit: ${esaint.format(credit, 'Currency')}`
       );
     }
   }
 
   getTotalDebitAndCredit() {
-    let debit = frappe.pesa(0);
-    let credit = frappe.pesa(0);
+    let debit = esaint.pesa(0);
+    let credit = esaint.pesa(0);
 
     for (let entry of this.entries) {
       debit = debit.add(entry.debit);
@@ -145,20 +145,20 @@ export default class LedgerPosting {
 
   async insertEntries() {
     for (let entry of this.entries) {
-      let entryDoc = frappe.newDoc({
+      let entryDoc = esaint.newDoc({
         doctype: 'AccountingLedgerEntry',
       });
       Object.assign(entryDoc, entry);
       await entryDoc.insert();
     }
     for (let entry of this.accountEntries) {
-      let entryDoc = await frappe.getDoc('Account', entry.name);
+      let entryDoc = await esaint.getDoc('Account', entry.name);
       entryDoc.balance = entryDoc.balance.add(entry.balanceChange);
       await entryDoc.update();
     }
   }
 
   getRoundOffAccount() {
-    return frappe.AccountingSettings.roundOffAccount;
+    return esaint.AccountingSettings.roundOffAccount;
   }
 }

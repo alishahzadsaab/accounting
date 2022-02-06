@@ -143,7 +143,7 @@
               <div>{{ tax.account }}</div>
               <div>
                 {{
-                  frappe.format(tax.amount, {
+                  esaint.format(tax.amount, {
                     fieldtype: 'Currency',
                     currency: doc.currency,
                   })
@@ -188,7 +188,7 @@
   </div>
 </template>
 <script>
-import frappe from 'frappe';
+import esaint from 'esaint';
 import StatusBadge from '@/components/StatusBadge';
 import PageHeader from '@/components/PageHeader';
 import Button from '@/components/Button';
@@ -232,7 +232,7 @@ export default {
   },
   computed: {
     meta() {
-      return frappe.getMeta(this.doctype);
+      return esaint.getMeta(this.doctype);
     },
     partyField() {
       let fieldname = {
@@ -253,18 +253,18 @@ export default {
   },
   async mounted() {
     try {
-      this.doc = await frappe.getDoc(this.doctype, this.name);
+      this.doc = await esaint.getDoc(this.doctype, this.name);
       window.d = this.doc;
     } catch (error) {
-      if (error instanceof frappe.errors.NotFoundError) {
+      if (error instanceof esaint.errors.NotFoundError) {
         routeTo(`/list/${this.doctype}`);
         return;
       }
       this.handleError(error);
     }
-    this.printSettings = await frappe.getSingle('PrintSettings');
+    this.printSettings = await esaint.getSingle('PrintSettings');
     this.companyName = (
-      await frappe.getSingle('AccountingSettings')
+      await esaint.getSingle('AccountingSettings')
     ).companyName;
 
     let query = this.$route.query;
@@ -317,7 +317,7 @@ export default {
         doc = this.doc;
       }
       let df = doc.meta.getField(fieldname);
-      return frappe.format(doc[fieldname], df, doc);
+      return esaint.format(doc[fieldname], df, doc);
     },
   },
 };

@@ -1,5 +1,5 @@
-import frappe from 'frappe';
-import { t } from 'frappe';
+import esaint from 'esaint';
+import { t } from 'esaint';
 
 const referenceTypeMap = {
   SalesInvoice: t('Invoice'),
@@ -46,7 +46,7 @@ export default {
             row.referenceType,
             row.referenceName,
             'outstandingAmount'
-          ) || frappe.pesa(0)
+          ) || esaint.pesa(0)
         );
       },
       required: 1,

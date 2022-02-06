@@ -32,7 +32,7 @@ function autoDebitCredit(type) {
   let otherType = type === 'debit' ? 'credit' : 'debit';
 
   return (row, doc) => {
-    if (!row[otherType].isZero()) return frappe.pesa(0);
+    if (!row[otherType].isZero()) return esaint.pesa(0);
 
     let totalType = doc.getSum('accounts', type, false);
     let totalOtherType = doc.getSum('accounts', otherType, false);

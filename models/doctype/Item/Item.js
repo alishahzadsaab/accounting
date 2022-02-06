@@ -1,5 +1,5 @@
-import frappe from 'frappe';
-import { t } from 'frappe';
+import esaint from 'esaint';
+import { t } from 'esaint';
 
 export default {
   name: 'Item',
@@ -63,7 +63,7 @@ export default {
           accountName = 'Sales';
         }
 
-        const accountExists = await frappe.db.exists('Account', accountName);
+        const accountExists = await esaint.db.exists('Account', accountName);
         return accountExists ? accountName : '';
       },
     },
@@ -83,7 +83,7 @@ export default {
       },
       formulaDependsOn: ['itemType'],
       async formula() {
-        const cogs = await frappe.db
+        const cogs = await esaint.db
           .knex('Account')
           .where({ accountType: 'Cost of Goods Sold' });
         if (cogs.length === 0) {
@@ -106,7 +106,7 @@ export default {
       fieldtype: 'Currency',
       validate(value) {
         if (value.lte(0)) {
-          throw new frappe.errors.ValidationError(
+          throw new esaint.errors.ValidationError(
             'Rate must be greater than 0'
           );
         }
@@ -127,7 +127,7 @@ export default {
       label: t('New Invoice'),
       condition: (doc) => !doc.isNew(),
       action: async (doc, router) => {
-        const invoice = await frappe.getNewDoc('SalesInvoice');
+        const invoice = await esaint.getNewDoc('SalesInvoice');
         invoice.append('items', {
           item: doc.name,
           rate: doc.rate,
@@ -140,7 +140,7 @@ export default {
       label: t('New Bill'),
       condition: (doc) => !doc.isNew(),
       action: async (doc, router) => {
-        const invoice = await frappe.getNewDoc('PurchaseInvoice');
+        const invoice = await esaint.getNewDoc('PurchaseInvoice');
         invoice.append('items', {
           item: doc.name,
           rate: doc.rate,

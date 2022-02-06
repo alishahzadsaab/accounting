@@ -1,12 +1,12 @@
-import frappe from 'frappe';
-import BaseDocument from 'frappe/model/document';
+import esaint from 'esaint';
+import BaseDocument from 'esaint/model/document';
 import { getExchangeRate } from '../../../accounting/exchangeRate';
 
 export default class TransactionDocument extends BaseDocument {
   async getExchangeRate() {
     if (!this.currency) return 1.0;
 
-    let accountingSettings = await frappe.getSingle('AccountingSettings');
+    let accountingSettings = await esaint.getSingle('AccountingSettings');
     const companyCurrency = accountingSettings.currency;
     if (this.currency === companyCurrency) {
       return 1.0;
@@ -30,7 +30,7 @@ export default class TransactionDocument extends BaseDocument {
         taxes[d.account] = taxes[d.account] || {
           account: d.account,
           rate: d.rate,
-          amount: frappe.pesa(0),
+          amount: esaint.pesa(0),
         };
 
         const amount = row.amount.mul(d.rate).div(100);
@@ -49,7 +49,7 @@ export default class TransactionDocument extends BaseDocument {
 
   async getTax(tax) {
     if (!this._taxes) this._taxes = {};
-    if (!this._taxes[tax]) this._taxes[tax] = await frappe.getDoc('Tax', tax);
+    if (!this._taxes[tax]) this._taxes[tax] = await esaint.getDoc('Tax', tax);
     return this._taxes[tax];
   }
 

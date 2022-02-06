@@ -47,8 +47,8 @@
   </div>
 </template>
 <script>
-import { t } from 'frappe';
-import frappe from 'frappe';
+import { t } from 'esaint';
+import esaint from 'esaint';
 import WindowControls from '@/components/WindowControls';
 import TabGeneral from './TabGeneral.vue';
 import TabSystem from './TabSystem.vue';
@@ -115,10 +115,10 @@ export default {
     showReloadToast() {
       showToast({
         message: t('Settings changes will be visible on reload'),
-        actionText: frappe.t('Reload App'),
+        actionText: esaint.t('Reload App'),
         type: 'info',
         action: async () => {
-          frappe.events.trigger('reload-main-window');
+          esaint.events.trigger('reload-main-window');
         },
       });
     },

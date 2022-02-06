@@ -1,4 +1,4 @@
-const frappe = require('frappe');
+const esaint = require('esaint');
 const mysql = require('mysql');
 const Database = require('./database');
 const debug = false;
@@ -86,7 +86,7 @@ module.exports = class mysqlDatabase extends Database {
     let placeholders = fields.map((d) => '?').join(', ');
 
     if (!doc.name) {
-      doc.name = frappe.getRandomString();
+      doc.name = esaint.getRandomString();
     }
 
     return await this.run(
@@ -143,7 +143,7 @@ module.exports = class mysqlDatabase extends Database {
     order = 'desc',
   } = {}) {
     if (!fields) {
-      fields = frappe.getMeta(doctype).getKeywordFields();
+      fields = esaint.getMeta(doctype).getKeywordFields();
     }
     return new Promise((resolve, reject) => {
       let conditions = this.getFilterConditions(filters);

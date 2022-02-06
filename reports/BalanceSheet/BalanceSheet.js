@@ -1,4 +1,4 @@
-import { unique } from 'frappe/utils';
+import { unique } from 'esaint/utils';
 import { getData } from '../FinancialStatements/FinancialStatements';
 
 class BalanceSheet {

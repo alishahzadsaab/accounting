@@ -128,7 +128,7 @@
   </div>
 </template>
 <script>
-import frappe from 'frappe';
+import esaint from 'esaint';
 import PageHeader from '@/components/PageHeader';
 import SearchBar from '@/components/SearchBar';
 import { openQuickEdit } from '@/utils';
@@ -156,8 +156,8 @@ export default {
   },
   methods: {
     async fetchAccounts() {
-      this.settings = frappe.getMeta(this.doctype).treeSettings;
-      const { currency } = await frappe.getSingle('AccountingSettings');
+      this.settings = esaint.getMeta(this.doctype).treeSettings;
+      const { currency } = await esaint.getSingle('AccountingSettings');
       this.root = {
         label: await this.settings.getRootLabel(),
         balance: 0,
@@ -231,7 +231,7 @@ export default {
       return c;
     },
     async getChildren(parent = null) {
-      const children = await frappe.db.getAll({
+      const children = await esaint.db.getAll({
         doctype: this.doctype,
         filters: {
           parentAccount: parent,
@@ -283,7 +283,7 @@ export default {
       this.insertingAccount = true;
 
       accountName = accountName.trim();
-      let account = await frappe.getNewDoc('Account');
+      let account = await esaint.getNewDoc('Account');
       try {
         let { name, rootType, accountType } = parentAccount;
         await account.set({

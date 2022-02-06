@@ -1,16 +1,16 @@
-import frappe from 'frappe';
-import runPatches from 'frappe/model/runPatches';
+import esaint from 'esaint';
+import runPatches from 'esaint/model/runPatches';
 import patches from '../patches/patches.json';
 
 export default async function runMigrate() {
   const canRunPatches = await getCanRunPatches();
   if (!canRunPatches) {
-    return await frappe.db.migrate();
+    return await esaint.db.migrate();
   }
 
   const patchList = await fetchPatchList();
   await runPatches(patchList.filter(({ beforeMigrate }) => beforeMigrate));
-  await frappe.db.migrate();
+  await esaint.db.migrate();
   await runPatches(patchList.filter(({ beforeMigrate }) => !beforeMigrate));
 }
 
@@ -38,7 +38,7 @@ async function fetchPatchList() {
 async function getCanRunPatches() {
   return (
     (
-      await frappe.db
+      await esaint.db
         .knex('sqlite_master')
         .where({ type: 'table', name: 'PatchRun' })
         .select('name')

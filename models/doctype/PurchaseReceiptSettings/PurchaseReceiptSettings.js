@@ -1,4 +1,4 @@
-import model from 'frappe/model';
+import model from 'esaint/model';
 import PurchaseOrderSettings from '../PurchaseOrderSettings/PurchaseOrderSettings';
 
 export default model.extend(PurchaseOrderSettings, {

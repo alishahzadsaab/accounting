@@ -1,11 +1,11 @@
-import frappe from 'frappe';
+import esaint from 'esaint';
 import importCharts from '../accounting/importCOA';
 import registerReportMethods from '../reports';
 
 export default function registerServerMethods() {
   registerReportMethods();
 
-  frappe.registerMethod({
+  esaint.registerMethod({
     method: 'import-coa',
     async handler() {
       await importCharts();

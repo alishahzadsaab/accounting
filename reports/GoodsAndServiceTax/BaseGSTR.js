@@ -1,4 +1,4 @@
-import frappe from 'frappe';
+import esaint from 'esaint';
 import { stateCodeMap } from '../../accounting/gst';
 import { convertPesaValuesToFloat } from '../../src/utils';
 
@@ -7,7 +7,7 @@ class BaseGSTR {
     if (['GSTR-1', 'GSTR-2'].includes(gstrType)) {
       const place = filters.place;
       delete filters.place;
-      let entries = await frappe.db.getAll({
+      let entries = await esaint.db.getAll({
         doctype: gstrType === 'GSTR-1' ? 'SalesInvoice' : 'PurchaseInvoice',
         filters,
       });
@@ -39,18 +39,18 @@ class BaseGSTR {
   }
 
   async getRow(ledgerEntry) {
-    ledgerEntry = await frappe.getDoc(ledgerEntry.doctype, ledgerEntry.name);
+    ledgerEntry = await esaint.getDoc(ledgerEntry.doctype, ledgerEntry.name);
 
     const row = {};
-    const { gstin } = frappe.AccountingSettings;
+    const { gstin } = esaint.AccountingSettings;
 
-    let party = await frappe.getDoc(
+    let party = await esaint.getDoc(
       'Party',
       ledgerEntry.customer || ledgerEntry.supplier
     );
 
     if (party.address) {
-      let addressDetails = await frappe.getDoc('Address', party.address);
+      let addressDetails = await esaint.getDoc('Address', party.address);
       row.place = addressDetails.pos || '';
     }
 

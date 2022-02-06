@@ -61,7 +61,7 @@
 </template>
 
 <script>
-import frappe from 'frappe';
+import esaint from 'esaint';
 import Row from '@/components/Row';
 import Base from './Base';
 import TableRow from './TableRow';
@@ -122,7 +122,7 @@ export default {
       return [0.3].concat(this.tableFields.map(() => 1));
     },
     tableFields() {
-      let meta = frappe.getMeta(this.df.childtype);
+      let meta = esaint.getMeta(this.df.childtype);
       return meta.tableFields.map(fieldname => meta.getField(fieldname));
     }
   }

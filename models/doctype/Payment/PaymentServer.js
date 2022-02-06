@@ -1,5 +1,5 @@
-import frappe from 'frappe';
-import BaseDocument from 'frappe/model/document';
+import esaint from 'esaint';
+import BaseDocument from 'esaint/model/document';
 import LedgerPosting from '../../../accounting/ledgerPosting';
 
 export default class PaymentServer extends BaseDocument {
@@ -28,7 +28,7 @@ export default class PaymentServer extends BaseDocument {
     }
 
     const doctype = referenceType;
-    const doc = await frappe.getDoc(doctype, referenceName);
+    const doc = await esaint.getDoc(doctype, referenceName);
 
     let party;
     let paymentType;
@@ -46,7 +46,7 @@ export default class PaymentServer extends BaseDocument {
   }
 
   updateAmountOnReferenceUpdate() {
-    this.amount = frappe.pesa(0);
+    this.amount = esaint.pesa(0);
     for (let paymentReference of this.for) {
       this.amount = this.amount.add(paymentReference.amount);
     }
@@ -73,18 +73,18 @@ export default class PaymentServer extends BaseDocument {
     if (!this.for?.length) return;
     const referenceAmountTotal = this.for
       .map(({ amount }) => amount)
-      .reduce((a, b) => a.add(b), frappe.pesa(0));
+      .reduce((a, b) => a.add(b), esaint.pesa(0));
 
     if (this.amount.add(this.writeoff ?? 0).lt(referenceAmountTotal)) {
-      const writeoff = frappe.format(this.writeoff, 'Currency');
-      const payment = frappe.format(this.amount, 'Currency');
-      const refAmount = frappe.format(referenceAmountTotal, 'Currency');
+      const writeoff = esaint.format(this.writeoff, 'Currency');
+      const payment = esaint.format(this.amount, 'Currency');
+      const refAmount = esaint.format(referenceAmountTotal, 'Currency');
       const writeoffString = this.writeoff.gt(0)
         ? `and writeoff: ${writeoff} `
         : '';
 
       throw new Error(
-        frappe.t(
+        esaint.t(
           `Amount: ${payment} ${writeoffString}is less than the total amount allocated to references: ${refAmount}.`
         )
       );
@@ -106,7 +106,7 @@ export default class PaymentServer extends BaseDocument {
       if (!['SalesInvoice', 'PurchaseInvoice'].includes(row.referenceType)) {
         continue;
       }
-      let referenceDoc = await frappe.getDoc(
+      let referenceDoc = await esaint.getDoc(
         row.referenceType,
         row.referenceName
       );
@@ -115,30 +115,30 @@ export default class PaymentServer extends BaseDocument {
         outstandingAmount = baseGrandTotal;
       }
       if (this.amount.lte(0) || this.amount.gt(outstandingAmount)) {
-        let message = frappe.t(
-          `Payment amount: ${frappe.format(
+        let message = esaint.t(
+          `Payment amount: ${esaint.format(
             this.amount,
             'Currency'
-          )} should be less than Outstanding amount: ${frappe.format(
+          )} should be less than Outstanding amount: ${esaint.format(
             outstandingAmount,
             'Currency'
           )}.`
         );
 
         if (this.amount.lte(0)) {
-          const amt = frappe.format(this.amount, 'Currency');
-          message = frappe.t(
+          const amt = esaint.format(this.amount, 'Currency');
+          message = esaint.t(
             `Payment amount: ${amt} should be greater than 0.`
           );
         }
 
-        throw new frappe.errors.ValidationError(message);
+        throw new esaint.errors.ValidationError(message);
       } else {
         // update outstanding amounts in invoice and party
         let newOutstanding = outstandingAmount.sub(this.amount);
         await referenceDoc.set('outstandingAmount', newOutstanding);
         await referenceDoc.update();
-        let party = await frappe.getDoc('Party', this.party);
+        let party = await esaint.getDoc('Party', this.party);
         await party.updateOutstandingAmount();
       }
     }
@@ -157,7 +157,7 @@ export default class PaymentServer extends BaseDocument {
 
   async updateReferenceOutstandingAmount() {
     await this.for.forEach(async ({ amount, referenceType, referenceName }) => {
-      const refDoc = await frappe.getDoc(referenceType, referenceName);
+      const refDoc = await esaint.getDoc(referenceType, referenceName);
       refDoc.update({
         outstandingAmount: refDoc.outstandingAmount.add(amount),
       });

@@ -1,4 +1,4 @@
-import frappe from 'frappe';
+import esaint from 'esaint';
 import { getSavePath, saveData, showExportInFolder } from '../src/utils';
 
 function templateToInnerText(innerHTML) {
@@ -65,8 +65,8 @@ async function exportJson(rows, columns, filePath, filters, reportName) {
 
   exportObject.timestamp = new Date().toISOString();
   exportObject.reportName = reportName;
-  exportObject.softwareName = 'Frappe Books';
-  exportObject.softwareVersion = frappe.store.appVersion;
+  exportObject.softwareName = 'esaint Books';
+  exportObject.softwareVersion = esaint.store.appVersion;
 
   await saveExportData(JSON.stringify(exportObject), filePath);
 }
@@ -101,5 +101,5 @@ export default function getCommonExportActions(reportName) {
 
 export async function saveExportData(data, filePath) {
   await saveData(data, filePath);
-  showExportInFolder(frappe.t('Export Successful'), filePath);
+  showExportInFolder(esaint.t('Export Successful'), filePath);
 }

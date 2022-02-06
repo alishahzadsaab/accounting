@@ -1,4 +1,4 @@
-import frappe from 'frappe';
+import esaint from 'esaint';
 import AccountsReceivablePayable from './AccountsReceivablePayable/AccountsReceivablePayable';
 import BalanceSheet from './BalanceSheet/BalanceSheet';
 import BankReconciliation from './BankReconciliation/BankReconciliation';
@@ -52,18 +52,18 @@ function registerReportMethods() {
   ];
 
   reports.forEach((report) => {
-    frappe.registerMethod({
+    esaint.registerMethod({
       method: report.method,
       handler: getReportData(report.class),
     });
   });
 
-  frappe.registerMethod({
+  esaint.registerMethod({
     method: 'accounts-receivable',
     handler: (args) => new AccountsReceivablePayable().run('Receivable', args),
   });
 
-  frappe.registerMethod({
+  esaint.registerMethod({
     method: 'accounts-payable',
     handler: (args) => new AccountsReceivablePayable().run('Payable', args),
   });

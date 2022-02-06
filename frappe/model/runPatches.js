@@ -1,8 +1,8 @@
-const frappe = require('frappe');
+const esaint = require('esaint');
 
 module.exports = async function runPatches(patchList) {
   const patchesAlreadyRun = (
-    await frappe.db.knex('PatchRun').select('name')
+    await esaint.db.knex('PatchRun').select('name')
   ).map(({ name }) => name);
 
   for (let patch of patchList) {
@@ -17,7 +17,7 @@ module.exports = async function runPatches(patchList) {
 async function runPatch({ patchName, patchFunction }) {
   try {
     await patchFunction();
-    const patchRun = frappe.getNewDoc('PatchRun');
+    const patchRun = esaint.getNewDoc('PatchRun');
     patchRun.name = patchName;
     await patchRun.insert();
   } catch (error) {

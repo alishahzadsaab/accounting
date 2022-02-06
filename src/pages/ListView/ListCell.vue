@@ -5,7 +5,7 @@
   </div>
 </template>
 <script>
-import frappe from 'frappe';
+import esaint from 'esaint';
 
 export default {
   name: 'ListCell',
@@ -14,7 +14,7 @@ export default {
     columnValue() {
       let { column, doc } = this;
       let value = doc[column.fieldname];
-      return frappe.format(value, column, doc);
+      return esaint.format(value, column, doc);
     },
     customRenderer() {
       if (!this.column.render) return;

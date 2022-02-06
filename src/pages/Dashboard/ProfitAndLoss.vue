@@ -27,7 +27,7 @@
   </div>
 </template>
 <script>
-import frappe from 'frappe';
+import esaint from 'esaint';
 import PeriodSelector from './PeriodSelector';
 import SectionHeader from './SectionHeader';
 import ProfitAndLoss from '../../../reports/ProfitAndLoss/ProfitAndLoss';
@@ -58,7 +58,7 @@ export default {
     chartData() {
       const points = [this.periodList.map((p) => this.data[p])];
       const colors = [{ positive: '#2490EF', negative: '#B7BFC6' }];
-      const format = (value) => frappe.format(value ?? 0, 'Currency');
+      const format = (value) => esaint.format(value ?? 0, 'Currency');
       const yMax = getYMax(points);
       const yMin = getYMin(points);
       return {

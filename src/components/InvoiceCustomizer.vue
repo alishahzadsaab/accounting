@@ -22,7 +22,7 @@
   </div>
 </template>
 <script>
-import FormLayout from 'frappe/ui/components/Form/FormLayout';
+import FormLayout from 'esaint/ui/components/Form/FormLayout';
 import { Sketch } from 'vue-color';
 
 export default {
@@ -39,9 +39,9 @@ export default {
     };
   },
   async created() {
-    this.doc = await frappe.getDoc('SalesInvoiceSettings');
+    this.doc = await esaint.getDoc('SalesInvoiceSettings');
     this.color.hex = this.doc.themeColor;
-    const meta = frappe.getMeta('SalesInvoiceSettings');
+    const meta = esaint.getMeta('SalesInvoiceSettings');
     this.fields = meta.fields.filter(
       field => field.fieldname !== 'numberSeries'
     );
@@ -61,7 +61,7 @@ export default {
       this.$emit('closeInvoiceCustomizer');
     },
     async openCompanySettings() {
-      const settings = await frappe.getSingle('CompanySettings');
+      const settings = await esaint.getSingle('CompanySettings');
       settings.on('afterSave', async () => {
         this.$formModal.close();
         this.$emit('updateTemplateView');

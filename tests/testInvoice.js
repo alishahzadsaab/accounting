@@ -1,15 +1,15 @@
 import assert from 'assert';
-import frappe from 'frappe';
-import helpers from 'frappe/tests/helpers';
+import esaint from 'esaint';
+import helpers from 'esaint/tests/helpers';
 import models from '../models';
 
 async function makeFixtures() {
-    if (!(await frappe.db.exists('Party', 'Test Customer'))) {
-        await frappe.insert({doctype:'Party', name:'Test Customer'})
-        await frappe.insert({doctype:'Item', name:'Test Item 1', description:'Test Item Description 1', unit:'No', rate: 100})
-        await frappe.insert({doctype:'Item', name:'Test Item 2', description:'Test Item Description 2', unit:'No', rate: 200})
-        await frappe.insert({doctype:'Account', name:'GST', parentAccount: 'Liabilities'});
-        await frappe.insert({doctype:'Tax', name:'GST',
+    if (!(await esaint.db.exists('Party', 'Test Customer'))) {
+        await esaint.insert({doctype:'Party', name:'Test Customer'})
+        await esaint.insert({doctype:'Item', name:'Test Item 1', description:'Test Item Description 1', unit:'No', rate: 100})
+        await esaint.insert({doctype:'Item', name:'Test Item 2', description:'Test Item Description 2', unit:'No', rate: 200})
+        await esaint.insert({doctype:'Account', name:'GST', parentAccount: 'Liabilities'});
+        await esaint.insert({doctype:'Tax', name:'GST',
             details: [{account: 'GST', rate:10}]
         })
     }
@@ -22,7 +22,7 @@ describe('Invoice', () => {
     });
 
     it('show create an invoice', async () => {
-        let invoice = await frappe.insert({
+        let invoice = await esaint.insert({
             doctype:'Invoice',
             customer: 'Test Customer',
             items: [
@@ -37,7 +37,7 @@ describe('Invoice', () => {
     });
 
     it('show create an invoice with tax', async () => {
-        let invoice = await frappe.insert({
+        let invoice = await esaint.insert({
             doctype:'Invoice',
             customer: 'Test Customer',
             items: [

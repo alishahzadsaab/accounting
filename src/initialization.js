@@ -1,5 +1,5 @@
 import config from '@/config';
-import SQLiteDatabase from 'frappe/backends/sqlite';
+import SQLiteDatabase from 'esaint/backends/sqlite';
 import fs from 'fs';
 import models from '../models';
 import regionalModelUpdates from '../models/regionalModelUpdates';
@@ -22,11 +22,11 @@ export async function createNewDatabase() {
 }
 
 async function runRegionalModelUpdates() {
-  if (!(await frappe.db.knex.schema.hasTable('SingleValue'))) {
+  if (!(await esaint.db.knex.schema.hasTable('SingleValue'))) {
     return;
   }
 
-  const { country, setupComplete } = await frappe.db.getSingle(
+  const { country, setupComplete } = await esaint.db.getSingle(
     'AccountingSettings'
   );
   if (!parseInt(setupComplete)) return;
@@ -38,12 +38,12 @@ export async function connectToLocalDatabase(filePath) {
     return { connectionSuccess: false, reason: DB_CONN_FAILURE.INVALID_FILE };
   }
 
-  frappe.login('Administrator');
+  esaint.login('Administrator');
   try {
-    frappe.db = new SQLiteDatabase({
+    esaint.db = new SQLiteDatabase({
       dbPath: filePath,
     });
-    await frappe.db.connect();
+    await esaint.db.connect();
   } catch (error) {
     console.error(error);
     return { connectionSuccess: false, reason: DB_CONN_FAILURE.CANT_CONNECT };
@@ -71,7 +71,7 @@ export async function connectToLocalDatabase(filePath) {
   }
 
   // set file info in config
-  const { companyName } = frappe.AccountingSettings;
+  const { companyName } = esaint.AccountingSettings;
   let files = config.get('files') || [];
   if (
     !files.find(
@@ -99,18 +99,18 @@ export async function connectToLocalDatabase(filePath) {
 export function purgeCache(purgeAll = false) {
   const filterFunction = purgeAll
     ? () => true
-    : (d) => frappe.docs[d][d] instanceof frappe.BaseMeta;
+    : (d) => esaint.docs[d][d] instanceof esaint.BaseMeta;
 
-  Object.keys(frappe.docs)
+  Object.keys(esaint.docs)
     .filter(filterFunction)
     .forEach((d) => {
-      frappe.removeFromCache(d, d);
-      delete frappe[d];
+      esaint.removeFromCache(d, d);
+      delete esaint[d];
     });
 
   if (purgeAll) {
-    delete frappe.db;
-    frappe.initializeAndRegister(models, true);
+    delete esaint.db;
+    esaint.initializeAndRegister(models, true);
   }
 }
 

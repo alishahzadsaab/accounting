@@ -1,5 +1,5 @@
-import frappe from 'frappe';
-import naming from 'frappe/model/naming';
+import esaint from 'esaint';
+import naming from 'esaint/model/naming';
 import GSTR3BServer from '../models/doctype/GSTR3B/GSTR3BServer.js';
 import JournalEntryServer from '../models/doctype/JournalEntry/JournalEntryServer.js';
 import PartyServer from '../models/doctype/Party/PartyServer.js';
@@ -10,14 +10,14 @@ import registerServerMethods from './registerServerMethods';
 
 export default async function postStart() {
   // set server-side modules
-  frappe.models.SalesInvoice.documentClass = SalesInvoiceServer;
-  frappe.models.Payment.documentClass = PaymentServer;
-  frappe.models.Party.documentClass = PartyServer;
-  frappe.models.PurchaseInvoice.documentClass = PurchaseInvoiceServer;
-  frappe.models.JournalEntry.documentClass = JournalEntryServer;
-  frappe.models.GSTR3B.documentClass = GSTR3BServer;
+  esaint.models.SalesInvoice.documentClass = SalesInvoiceServer;
+  esaint.models.Payment.documentClass = PaymentServer;
+  esaint.models.Party.documentClass = PartyServer;
+  esaint.models.PurchaseInvoice.documentClass = PurchaseInvoiceServer;
+  esaint.models.JournalEntry.documentClass = JournalEntryServer;
+  esaint.models.GSTR3B.documentClass = GSTR3BServer;
 
-  frappe.metaCache = {};
+  esaint.metaCache = {};
 
   // init naming series if missing
   await naming.createNumberSeries('SINV-', 'SalesInvoiceSettings');
@@ -32,18 +32,18 @@ export default async function postStart() {
 
   // fetch singles
   // so that they are available synchronously
-  await frappe.getSingle('SystemSettings');
-  await frappe.getSingle('AccountingSettings');
-  await frappe.getSingle('GetStarted');
+  await esaint.getSingle('SystemSettings');
+  await esaint.getSingle('AccountingSettings');
+  await esaint.getSingle('GetStarted');
 
-  // cache currency symbols for frappe.format
+  // cache currency symbols for esaint.format
   await setCurrencySymbols();
 
   registerServerMethods();
 }
 
 export async function setCurrencySymbols() {
-  frappe.currencySymbols = await frappe.db
+  esaint.currencySymbols = await esaint.db
     .getAll({
       doctype: 'Currency',
       fields: ['name', 'symbol'],

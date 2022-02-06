@@ -1,6 +1,6 @@
-const frappe = require('frappe');
-const Observable = require('frappe/utils/observable');
-const triggerEvent = (name) => frappe.events.trigger(`http:${name}`);
+const esaint = require('esaint');
+const Observable = require('esaint/utils/observable');
+const triggerEvent = (name) => esaint.events.trigger(`http:${name}`);
 
 module.exports = class HTTPClient extends Observable {
   constructor({ server, protocol = 'http' }) {
@@ -8,10 +8,10 @@ module.exports = class HTTPClient extends Observable {
 
     this.server = server;
     this.protocol = protocol;
-    frappe.config.serverURL = this.getURL();
+    esaint.config.serverURL = this.getURL();
 
     // if the backend is http, then always client!
-    frappe.isServer = false;
+    esaint.isServer = false;
 
     this.initTypeMap();
   }
@@ -48,7 +48,7 @@ module.exports = class HTTPClient extends Observable {
     url =
       url +
       '?' +
-      frappe.getQueryString({
+      esaint.getQueryString({
         fields: JSON.stringify(fields),
         filters: JSON.stringify(filters),
         start: start,
@@ -112,7 +112,7 @@ module.exports = class HTTPClient extends Observable {
     triggerEvent('ajaxStart');
 
     args.headers = this.getHeaders();
-    let response = await frappe.fetch(url, args);
+    let response = await esaint.fetch(url, args);
 
     triggerEvent('ajaxStop');
 
@@ -129,7 +129,7 @@ module.exports = class HTTPClient extends Observable {
   }
 
   getFilesToUpload(doc) {
-    const meta = frappe.getMeta(doc.doctype);
+    const meta = esaint.getMeta(doc.doctype);
     const fileFields = meta.getFieldsWith({ fieldtype: 'File' });
     const filesToUpload = [];
 
@@ -172,7 +172,7 @@ module.exports = class HTTPClient extends Observable {
       formData.append('files', file, file.name);
     }
 
-    let response = await frappe.fetch(url, {
+    let response = await esaint.fetch(url, {
       method: 'POST',
       body: formData,
     });
@@ -193,8 +193,8 @@ module.exports = class HTTPClient extends Observable {
       Accept: 'application/json',
       'Content-Type': 'application/json',
     };
-    if (frappe.session && frappe.session.token) {
-      headers.token = frappe.session.token;
+    if (esaint.session && esaint.session.token) {
+      headers.token = esaint.session.token;
     }
     return headers;
   }

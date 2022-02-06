@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import frappe from 'frappe';
+import esaint from 'esaint';
 import TwoColumnForm from '@/components/TwoColumnForm';
 import { checkForUpdates } from '@/utils';
 
@@ -35,12 +35,12 @@ export default {
     };
   },
   async mounted() {
-    this.doc = frappe.SystemSettings;
-    this.companyName = frappe.AccountingSettings.companyName;
+    this.doc = esaint.SystemSettings;
+    this.companyName = esaint.AccountingSettings.companyName;
   },
   computed: {
     fields() {
-      let meta = frappe.getMeta('SystemSettings');
+      let meta = esaint.getMeta('SystemSettings');
       return meta.getQuickEditFields();
     },
   },

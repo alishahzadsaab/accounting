@@ -1,5 +1,5 @@
-const frappe = require('frappe');
-const Observable = require('frappe/utils/observable');
+const esaint = require('esaint');
+const Observable = require('esaint/utils/observable');
 const naming = require('./naming');
 const { isPesa } = require('../utils/index');
 const { DEFAULT_INTERNAL_PRECISION } = require('../utils/consts');
@@ -42,17 +42,17 @@ module.exports = class BaseDocument extends Observable {
 
   get meta() {
     if (this.isCustom) {
-      this._meta = frappe.createMeta(this.fields);
+      this._meta = esaint.createMeta(this.fields);
     }
     if (!this._meta) {
-      this._meta = frappe.getMeta(this.doctype);
+      this._meta = esaint.getMeta(this.doctype);
     }
     return this._meta;
   }
 
   async getSettings() {
     if (!this._settings) {
-      this._settings = await frappe.getSingle(this.meta.settings);
+      this._settings = await esaint.getSingle(this.meta.settings);
     }
     return this._settings;
   }
@@ -116,7 +116,7 @@ module.exports = class BaseDocument extends Observable {
         }
 
         if (field.fieldtype === 'Currency' && !isPesa(defaultValue)) {
-          defaultValue = frappe.pesa(defaultValue);
+          defaultValue = esaint.pesa(defaultValue);
         }
 
         this[field.fieldname] = defaultValue;
@@ -139,7 +139,7 @@ module.exports = class BaseDocument extends Observable {
       } else if (field.fieldtype === 'Float') {
         value = parseFloat(value);
       } else if (field.fieldtype === 'Currency' && !isPesa(value)) {
-        value = frappe.pesa(value);
+        value = esaint.pesa(value);
       }
       this[field.fieldname] = value;
     }
@@ -184,7 +184,7 @@ module.exports = class BaseDocument extends Observable {
     }
 
     if (!data.name) {
-      data.name = frappe.getRandomString();
+      data.name = esaint.getRandomString();
     }
 
     const childDoc = new BaseDocument(data);
@@ -211,8 +211,8 @@ module.exports = class BaseDocument extends Observable {
 
     if (missingMandatory.length > 0) {
       let fields = missingMandatory.join('\n');
-      let message = frappe.t('Value missing for {0}', fields);
-      throw new frappe.errors.MandatoryError(message);
+      let message = esaint.t('Value missing for {0}', fields);
+      throw new esaint.errors.MandatoryError(message);
     }
 
     function getMissingMandatory(doc) {
@@ -254,7 +254,7 @@ module.exports = class BaseDocument extends Observable {
   async validateField(key, value) {
     let field = this.meta.getField(key);
     if (!field) {
-      throw new frappe.errors.InvalidFieldError(`Invalid field ${key}`);
+      throw new esaint.errors.InvalidFieldError(`Invalid field ${key}`);
     }
     if (field.fieldtype == 'Select') {
       this.meta.validateSelect(field, value);
@@ -278,13 +278,13 @@ module.exports = class BaseDocument extends Observable {
       email(value) {
         let isValid = /(.+)@(.+){2,}\.(.+){2,}/.test(value);
         if (!isValid) {
-          throw new frappe.errors.ValidationError(`Invalid email: ${value}`);
+          throw new esaint.errors.ValidationError(`Invalid email: ${value}`);
         }
       },
       phone(value) {
         let isValid = /[+]{0,1}[\d ]+/.test(value);
         if (!isValid) {
-          throw new frappe.errors.ValidationError(`Invalid phone: ${value}`);
+          throw new esaint.errors.ValidationError(`Invalid phone: ${value}`);
         }
       },
     };
@@ -308,14 +308,14 @@ module.exports = class BaseDocument extends Observable {
 
   setStandardValues() {
     // set standard values on server-side only
-    if (frappe.isServer) {
+    if (esaint.isServer) {
       if (this.isSubmittable && this.submitted == null) {
         this.submitted = 0;
       }
 
       let now = new Date().toISOString();
       if (!this.owner) {
-        this.owner = frappe.session.user;
+        this.owner = esaint.session.user;
       }
 
       if (!this.creation) {
@@ -327,15 +327,15 @@ module.exports = class BaseDocument extends Observable {
   }
 
   updateModified() {
-    if (frappe.isServer) {
+    if (esaint.isServer) {
       let now = new Date().toISOString();
-      this.modifiedBy = frappe.session.user;
+      this.modifiedBy = esaint.session.user;
       this.modified = now;
     }
   }
 
   async load() {
-    let data = await frappe.db.get(this.doctype, this.name);
+    let data = await esaint.db.get(this.doctype, this.name);
     if (data && data.name) {
       this.syncValues(data);
       if (this.meta.isSingle) {
@@ -344,7 +344,7 @@ module.exports = class BaseDocument extends Observable {
       }
       await this.loadLinks();
     } else {
-      throw new frappe.errors.NotFoundError(
+      throw new esaint.errors.NotFoundError(
         `Not Found: ${this.doctype} ${this.name}`
       );
     }
@@ -362,7 +362,7 @@ module.exports = class BaseDocument extends Observable {
     this._links = this._links || {};
     let df = this.meta.getField(fieldname);
     if (this[df.fieldname]) {
-      this._links[df.fieldname] = await frappe.getDoc(
+      this._links[df.fieldname] = await esaint.getDoc(
         df.target,
         this[df.fieldname]
       );
@@ -403,13 +403,13 @@ module.exports = class BaseDocument extends Observable {
   }
 
   async compareWithCurrentDoc() {
-    if (frappe.isServer && !this.isNew()) {
-      let currentDoc = await frappe.db.get(this.doctype, this.name);
+    if (esaint.isServer && !this.isNew()) {
+      let currentDoc = await esaint.db.get(this.doctype, this.name);
 
       // check for conflict
       if (currentDoc && this.modified != currentDoc.modified) {
-        throw new frappe.errors.Conflict(
-          frappe.t('Document {0} {1} has been modified after loading', [
+        throw new esaint.errors.Conflict(
+          esaint.t('Document {0} {1} has been modified after loading', [
             this.doctype,
             this.name,
           ])
@@ -417,8 +417,8 @@ module.exports = class BaseDocument extends Observable {
       }
 
       if (this.submitted && !this.meta.isSubmittable) {
-        throw new frappe.errors.ValidationError(
-          frappe.t('Document type {1} is not submittable', [this.doctype])
+        throw new esaint.errors.ValidationError(
+          esaint.t('Document type {1} is not submittable', [this.doctype])
         );
       }
 
@@ -444,7 +444,7 @@ module.exports = class BaseDocument extends Observable {
 
     // children
     for (let tablefield of this.meta.getTableFields()) {
-      let formulaFields = frappe
+      let formulaFields = esaint
         .getMeta(tablefield.childtype)
         .getFormulaFields();
       if (formulaFields.length) {
@@ -490,7 +490,7 @@ module.exports = class BaseDocument extends Observable {
         return true;
       }
 
-      if (!frappe.isServer || frappe.isElectron) {
+      if (!esaint.isServer || esaint.isElectron) {
         if (doc[field.fieldname] == null || doc[field.fieldname] == '') {
           return true;
         }
@@ -570,11 +570,11 @@ module.exports = class BaseDocument extends Observable {
     await this.trigger('beforeInsert');
 
     let oldName = this.name;
-    const data = await frappe.db.insert(this.doctype, this.getValidDict());
+    const data = await esaint.db.insert(this.doctype, this.getValidDict());
     this.syncValues(data);
 
     if (oldName !== this.name) {
-      frappe.removeFromCache(this.doctype, oldName);
+      esaint.removeFromCache(this.doctype, oldName);
     }
 
     await this.trigger('afterInsert');
@@ -598,7 +598,7 @@ module.exports = class BaseDocument extends Observable {
     // update modifiedBy and modified
     this.updateModified();
 
-    const data = await frappe.db.update(this.doctype, this.getValidDict());
+    const data = await esaint.db.update(this.doctype, this.getValidDict());
     this.syncValues(data);
 
     await this.trigger('afterUpdate');
@@ -621,7 +621,7 @@ module.exports = class BaseDocument extends Observable {
 
   async delete() {
     await this.trigger('beforeDelete');
-    await frappe.db.delete(this.doctype, this.name);
+    await esaint.db.delete(this.doctype, this.name);
     await this.trigger('afterDelete');
   }
 
@@ -647,7 +647,7 @@ module.exports = class BaseDocument extends Observable {
 
   async rename(newName) {
     await this.trigger('beforeRename');
-    await frappe.db.rename(this.doctype, this.name, newName);
+    await esaint.db.rename(this.doctype, this.name, newName);
     this.name = newName;
     await this.trigger('afterRename');
   }
@@ -668,7 +668,7 @@ module.exports = class BaseDocument extends Observable {
         const value = d[childfield] ?? 0;
         if (!isPesa(value)) {
           try {
-            return frappe.pesa(value);
+            return esaint.pesa(value);
           } catch (err) {
             err.message += ` value: '${value}' of type: ${typeof value}, fieldname: '${tablefield}', childfield: '${childfield}'`;
             throw err;
@@ -676,7 +676,7 @@ module.exports = class BaseDocument extends Observable {
         }
         return value;
       })
-      .reduce((a, b) => a.add(b), frappe.pesa(0));
+      .reduce((a, b) => a.add(b), esaint.pesa(0));
 
     if (convertToFloat) {
       return sum.float;
@@ -686,7 +686,7 @@ module.exports = class BaseDocument extends Observable {
 
   getFrom(doctype, name, fieldname) {
     if (!name) return '';
-    return frappe.db.getCachedValue(doctype, name, fieldname);
+    return esaint.db.getCachedValue(doctype, name, fieldname);
   }
 
   round(value, df = null) {
@@ -694,8 +694,8 @@ module.exports = class BaseDocument extends Observable {
       df = this.meta.getField(df);
     }
     const precision =
-      frappe.SystemSettings.internalPrecision ?? DEFAULT_INTERNAL_PRECISION;
-    return frappe.pesa(value).clip(precision).float;
+      esaint.SystemSettings.internalPrecision ?? DEFAULT_INTERNAL_PRECISION;
+    return esaint.pesa(value).clip(precision).float;
   }
 
   isNew() {
@@ -715,7 +715,7 @@ function getPreDefaultValues(fieldtype) {
     case 'Table':
       return [];
     case 'Currency':
-      return frappe.pesa(0.0);
+      return esaint.pesa(0.0);
     case 'Int':
     case 'Float':
       return 0;

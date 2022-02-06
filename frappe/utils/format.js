@@ -1,5 +1,5 @@
 const luxon = require('luxon');
-const frappe = require('frappe');
+const esaint = require('esaint');
 const { DEFAULT_DISPLAY_PRECISION, DEFAULT_LOCALE } = require('./consts');
 
 module.exports = {
@@ -17,10 +17,10 @@ module.exports = {
       value = formatCurrency(value, currency);
     } else if (df.fieldtype === 'Date') {
       let dateFormat;
-      if (!frappe.SystemSettings) {
+      if (!esaint.SystemSettings) {
         dateFormat = 'yyyy-MM-dd';
       } else {
-        dateFormat = frappe.SystemSettings.dateFormat;
+        dateFormat = esaint.SystemSettings.dateFormat;
       }
 
       if (typeof value === 'string') {
@@ -61,7 +61,7 @@ function formatCurrency(value, currency) {
     throw err;
   }
 
-  const currencySymbol = frappe.currencySymbols[currency];
+  const currencySymbol = esaint.currencySymbols[currency];
   if (currencySymbol) {
     return currencySymbol + ' ' + valueString;
   }
@@ -90,15 +90,15 @@ function formatNumber(value) {
 }
 
 function getNumberFormatter() {
-  if (frappe.currencyFormatter) {
-    return frappe.currencyFormatter;
+  if (esaint.currencyFormatter) {
+    return esaint.currencyFormatter;
   }
 
-  const locale = frappe.SystemSettings.locale ?? DEFAULT_LOCALE;
+  const locale = esaint.SystemSettings.locale ?? DEFAULT_LOCALE;
   const display =
-    frappe.SystemSettings.displayPrecision ?? DEFAULT_DISPLAY_PRECISION;
+    esaint.SystemSettings.displayPrecision ?? DEFAULT_DISPLAY_PRECISION;
 
-  return (frappe.currencyFormatter = Intl.NumberFormat(locale, {
+  return (esaint.currencyFormatter = Intl.NumberFormat(locale, {
     style: 'decimal',
     minimumFractionDigits: display,
   }));
@@ -106,7 +106,7 @@ function getNumberFormatter() {
 
 function getCurrency(df, doc) {
   if (!(doc && df.getCurrency)) {
-    return df.currency || frappe.AccountingSettings.currency || '';
+    return df.currency || esaint.AccountingSettings.currency || '';
   }
 
   if (doc.meta && doc.meta.isChild) {

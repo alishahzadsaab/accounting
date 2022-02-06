@@ -1,4 +1,4 @@
-import frappe from 'frappe';
+import esaint from 'esaint';
 
 class GeneralLedger {
   async run(params) {
@@ -15,7 +15,7 @@ class GeneralLedger {
     }
 
     let data = (
-      await frappe.db.getAll({
+      await esaint.db.getAll({
         doctype: 'AccountingLedgerEntry',
         fields: [
           'date',

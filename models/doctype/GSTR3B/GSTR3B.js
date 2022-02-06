@@ -1,4 +1,4 @@
-import frappe from 'frappe';
+import esaint from 'esaint';
 import GSTR3B from './GSTR3BDocument.js';
 
 export default {
@@ -67,7 +67,7 @@ export default {
       label: 'Delete',
       condition: (form) => !form.doc._notInserted,
       action: async (form) => {
-        const doc = await frappe.getDoc('GSTR3B', form.doc.name);
+        const doc = await esaint.getDoc('GSTR3B', form.doc.name);
         await doc.delete();
         form.$router.push({
           path: `/list/GSTR3B`,

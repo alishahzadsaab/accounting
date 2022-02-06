@@ -1,5 +1,5 @@
 <script>
-import frappe from 'frappe';
+import esaint from 'esaint';
 import AutoComplete from './AutoComplete';
 import Badge from '@/components/Badge';
 import { openQuickEdit } from '@/utils';
@@ -12,7 +12,7 @@ export default {
       let doctype = this.getTarget();
       let meta;
       try {
-        meta = frappe.getMeta(doctype);
+        meta = esaint.getMeta(doctype);
       } catch (err) {
         if (err.message.includes('not a registered doctype')) {
           return [];
@@ -23,7 +23,7 @@ export default {
       if (keyword && !filters.keywords) {
         filters.keywords = ['like', keyword];
       }
-      let results = await frappe.db.getAll({
+      let results = await esaint.db.getAll({
         doctype,
         filters,
         fields: [
@@ -94,7 +94,7 @@ export default {
     },
     async openNewDoc() {
       let doctype = this.df.target;
-      let doc = await frappe.getNewDoc(doctype);
+      let doc = await esaint.getNewDoc(doctype);
       let filters = await this.getFilters();
       openQuickEdit({
         doctype,

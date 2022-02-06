@@ -1,10 +1,10 @@
-import frappe from 'frappe';
+import esaint from 'esaint';
 
 function getTablesToConvert() {
   // Do not change loops to map, doesn't work for some reason.
   const toConvert = [];
-  for (let key in frappe.models) {
-    const model = frappe.models[key];
+  for (let key in esaint.models) {
+    const model = esaint.models[key];
 
     const fieldsToConvert = [];
     for (let i in model.fields) {
@@ -26,10 +26,10 @@ function getTablesToConvert() {
 export default async function execute() {
   const toConvert = getTablesToConvert();
   for (let { name, fields } of toConvert) {
-    const rows = await frappe.db.knex(name);
+    const rows = await esaint.db.knex(name);
     const convertedRows = rows.map((row) => {
       for (let field of fields) {
-        row[field] = frappe.pesa(row[field] ?? 0).store;
+        row[field] = esaint.pesa(row[field] ?? 0).store;
       }
 
       if ('numberFormat' in row) {
@@ -38,6 +38,6 @@ export default async function execute() {
 
       return row;
     });
-    await frappe.db.prestigeTheTable(name, convertedRows);
+    await esaint.db.prestigeTheTable(name, convertedRows);
   }
 }

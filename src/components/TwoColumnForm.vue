@@ -91,7 +91,7 @@
   </div>
 </template>
 <script>
-import frappe from 'frappe';
+import esaint from 'esaint';
 import FormControl from '@/components/Controls/FormControl';
 import Button from '@/components/Button';
 import { handleErrorWithDialog, getErrorMessage } from '../errorHandling';
@@ -212,7 +212,7 @@ let TwoColumnForm = {
 
       this.inlineEditField = df;
       if (!this.doc[df.fieldname]) {
-        this.inlineEditDoc = await frappe.getNewDoc(df.target);
+        this.inlineEditDoc = await esaint.getNewDoc(df.target);
         this.inlineEditDoc.once('afterInsert', () => {
           this.onChange(df, this.inlineEditDoc.name);
         });
@@ -222,7 +222,7 @@ let TwoColumnForm = {
 
       this.inlineEditDisplayField =
         this.doc.meta.inlineEditDisplayField || 'name';
-      this.inlineEditFields = frappe.getMeta(df.target).getQuickEditFields();
+      this.inlineEditFields = esaint.getMeta(df.target).getQuickEditFields();
     },
     async saveInlineEditDoc(df) {
       if (!this.inlineEditDoc) {

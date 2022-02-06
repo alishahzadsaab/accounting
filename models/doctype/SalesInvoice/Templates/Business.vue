@@ -18,16 +18,16 @@
             class="font-semibold text-xl"
             :style="{ color: printSettings.color }"
           >
-            {{ frappe.AccountingSettings.companyName }}
+            {{ esaint.AccountingSettings.companyName }}
           </div>
           <div class="text-sm text-gray-800" v-if="companyAddress">
             {{ companyAddress.addressDisplay }}
           </div>
           <div
             class="text-sm text-gray-800"
-            v-if="frappe.AccountingSettings && frappe.AccountingSettings.gstin"
+            v-if="esaint.AccountingSettings && esaint.AccountingSettings.gstin"
           >
-            GSTIN: {{ frappe.AccountingSettings.gstin }}
+            GSTIN: {{ esaint.AccountingSettings.gstin }}
           </div>
         </div>
       </div>
@@ -41,7 +41,7 @@
               {{ doc.name }}
             </div>
             <div>
-              {{ frappe.format(doc.date, 'Date') }}
+              {{ esaint.format(doc.date, 'Date') }}
             </div>
           </div>
         </div>
@@ -84,7 +84,7 @@
             <div class="text-right">
               <div class="text-gray-800">{{ t('Subtotal') }}</div>
               <div class="text-xl mt-2">
-                {{ frappe.format(doc.netTotal, 'Currency') }}
+                {{ esaint.format(doc.netTotal, 'Currency') }}
               </div>
             </div>
             <div
@@ -96,7 +96,7 @@
                 {{ tax.account }} ({{ tax.rate }}%)
               </div>
               <div class="text-xl mt-2">
-                {{ frappe.format(tax.amount, 'Currency') }}
+                {{ esaint.format(tax.amount, 'Currency') }}
               </div>
             </div>
           </div>
@@ -107,7 +107,7 @@
             <div>
               <div>{{ t('Grand Total') }}</div>
               <div class="text-2xl mt-2 font-semibold">
-                {{ frappe.format(doc.grandTotal, 'Currency') }}
+                {{ esaint.format(doc.grandTotal, 'Currency') }}
               </div>
             </div>
           </div>
