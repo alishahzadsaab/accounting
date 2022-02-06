@@ -1,0 +1,50 @@
+@font-face {
+  font-family: 'Inter';
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: oblique 0deg 10deg;
+  src: url('../assets/fonts/Inter.var.woff2') format('woff2');
+}
+
+* {
+  font-variation-settings: 'slnt' 0deg;
+}
+.italic {
+  font-variation-settings: 'slnt' 10deg;
+}
+
+@tailwind base;
+
+@tailwind components;
+
+@tailwind utilities;
+
+html {
+  color: theme('colors.black');
+}
+
+.window-drag {
+  -webkit-app-region: drag;
+}
+
+.window-no-drag {
+  -webkit-app-region: no-drag;
+}
+
+.grid {
+  display: grid;
+}
+
+.inline-grid {
+  display: inline-grid;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.frappe-chart .chart-legend {
+  display: none;
+}
