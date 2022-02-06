@@ -1,0 +1,13 @@
+node_modules
+.DS_Store
+Thumbs.db
+*test.db
+*.log
+.cache
+/temp
+dist
+www/dist
+Frappe Accounting*
+build
+!build/icons
+!.gitkeep
